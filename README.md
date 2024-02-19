@@ -33,9 +33,9 @@ There are tools that simulate clicking actions on behalf of a user (they are all
 
 This is where I began initially. Then, I discovered that Vinted had an API. Initially unsuccessful, I revisited the project a couple of weeks/months later, using Man-in-the-Middle software. I spent two months comprehensively understanding everything, especially the authentication process.
 
-# This code and engineering could potentially be used to create a business that Vinted might consider paying for, as it offers significant time-saving benefits
+# This code and engineering could potentially be used to create a business that Vinties might consider paying for, as it offers significant time-saving benefits
 
-I chose not to proceed further because I don't want to earn money in that manner, even though it could generate passive income and create job opportunities. I reached out to developers from the Vinted team, and my goal for the upcoming years is to get a job at Vinted, as it's one of my dream companies. I wish I could implement some features into the official app
+I chose not to proceed further because I don't want to earn money in that manner, even though it could generate passive income and create job opportunities. I reached out to developers from the Vinted team, and my goal for the upcoming years is to get a job at Vinted, as it's one of my dream companies. I wish I could implement some features into the official app.
 
 Vinted stores the access token in a cookie. This is why the app operates for a limited time, requiring the user to copy their access token again, as the refresh token isn't stored on the client side due to security reasons.
 
@@ -61,7 +61,6 @@ This project improved my skills. If I did it again, I'd aim to use more powerful
 - Develop a publication menu linked to the database (search bar with ad titles, NEW Article => Add to the database (optional but checked by default)).
 - Enable 5 favorite messages that can be easily copied by clicking a button.
 - Create a feature for an annual report compatible each year.
-
 
 ### Client App:
 - Build a desktop application specifically for printing file.
