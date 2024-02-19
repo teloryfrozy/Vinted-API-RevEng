@@ -1,0 +1,109 @@
+{    
+    "directories": {        
+        "fr": {
+            "backup": "Sauvegarde",
+            "shippers": "Transporteurs"
+        },
+        "en": {
+            "backup": "Backup",
+            "shippers": "Shippers"
+        },
+        "de": {
+            "backup": "Versender",
+            "shippers": "Datensicherung"
+        },
+        "es": {
+            "backup": "Backup",
+            "shippers": "Expedidores"
+        }
+    },
+    "accounting": {
+        "leboncoin_purchase": {
+            "bound1": "Récapitulatif de votre commande", 
+            "bound2": "sur leboncoin"
+        },
+        "leboncoin_cancel": {
+            "bound1": "Votre commande",
+            "bound2": "a été annulée par le vendeur"
+        },
+        "aliexpress": {
+            "bound1": "Order", 
+            "bound2": "order confirmation"
+        },
+        "urssaf": {
+            "bound1": "URSSAF",
+            "bound2": "Votre paiement pour la commande"
+        }
+    },
+    "shippers_email":  {
+        "chronopost": {
+            "name": "Chronopost",
+            "emails": [
+                "chronopost@network1.pickup.fr",
+                "chronopost@network2.pickup.fr",
+                "avisage-ne-pas-repondre@chronopost.fr"
+            ]
+        },
+        "mondial_relay": {
+            "name": "MondialRelay",
+            "emails": [
+                "noreply@mondialrelay.fr"
+            ]
+        },
+        "colissimo": {
+            "name": "Colissimo",
+            "emails": [
+                "noreply@notif-colissimo-laposte.info"
+            ]
+        },
+        "colis_prive": {
+            "name": "ColisPrive",
+            "emails": [
+                "noreply@colisprive-store.com"
+            ]
+        },
+        "relais_colis": {
+            "name": "RelaisColis",
+            "emails": [
+                "noreply@relaiscolis.com"
+            ]
+        }
+    },
+    "notifications_templates": {
+        "leboncoin": {
+            "notifications": [
+                ["Suppression de", "annonces sur leboncoin.fr"],
+                ["s'est vendu", "confirmez sa disponibilité !"],   
+                ["Nouveau message", "sur leboncoin"],
+                ["Nouvelle", "annonce de"],
+                ["Votre annonce", "a été retirée"],
+                ["Votre annonce", "est en ligne"],
+                ["Votre annonce", "a été refusée"],
+                ["Votre paiement", "a été autorisé"],
+                ["Bonne nouvelle, le vendeur a", "la disponibilit\u00e9 de votre commande"],
+                ["Votre colis pour la commande", "est disponible en point relais"],
+                ["N'attendez plus pour", "envoyer la commande"],
+                ["Confirmation d'envoi de votre colis", "pour la commande"],
+                ["Confirmation de r\u00e9ception", "de votre colis pour la commande"],
+                ["Votre colis pour la commande", "a bien \u00e9t\u00e9 envoy\u00e9"],
+                ["Votre colis pour la commande", "a bien été reçu"]
+            ],
+            "email": ["no.reply@leboncoin.fr"],
+            "path": "Logistic/LeBonCoin"
+        },
+        "vinted": {
+            "notifications": [
+                ["Your payment is being", "sent to your bank"]
+            ],
+            "email": ["no-reply@vinted.fr"],
+            "path": "Logistic/Vinted"
+        },
+        "aliexpress": {
+            "notifications": [
+                ["", ""]
+            ],
+            "email": ["transaction@notice.aliexpress.com", "notice@info.aliexpress.com", "promotion@aliexpress.com"],
+            "path": "Logistic/Aliexpress"
+        }
+    }
+}

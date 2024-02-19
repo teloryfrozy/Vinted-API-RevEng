@@ -1,0 +1,34 @@
+{
+    "nb_products": 17,
+    "item": {
+        "id": null,
+        "currency": "EUR",
+        "title": "Cartouche Multijeux 300 jeux (Français)",
+        "description": "----- Description -----\n\u2705 Produit neuf\n\ud83d\udce6 1 cartouche avec un adaptateur micro SD offert\n\u2728 Jeux fonctionnels et disponible en fran\u00e7ais\n\u2139\ufe0f Liste des jeux par message\nPrincipaux titres\n- 4 jeux Harry Potter\n- 11 jeux LEGO\n- 8 jeux Mario\n- 3 jeux Metroid Prime\n- 15 jeux Pok\u00e9mon\n- 4 jeux Professeur Layton\n- 2 jeux Zelda\n- 5 jeux Dragon Ball\n- 5 jeux Dragon Quest\n-8 jeux Final Fantasy\n\nAutres gros titres\n- Grand Theft Auto\n- Tom Clancy's Splinter Cell - Chaos Theory\n- Tomb Raider - Underworld\n\n300 jeux retro \u00e0 retrouver dans une seule et unique carte.\n\n------ Informations ------\n\ud83d\udc49 Annonce en ligne \u21e8 toujours disponible\n\ud83d\udce8 Envoyez nous vos questions\n\ud83d\ude80 Compatible avec DS, DS Lite, 3DS, 3DS XL, 2DS, 2DS XL, New 3DS, New 3DS XL\n\n\n\n\n------ Mots-cl\u00e9s ------\n#labrotique #jeuxlabrotique #retro #gaming #games",
+        "brand_id": 77600,
+        "brand": "Nintendo",
+        "size_id": null,
+        "catalog_id": 2449,
+        "isbn": null,
+        "is_unisex": false,
+        "is_for_sell": true,
+        "status_id": 2,
+        "video_game_rating_id": 160,
+        "price": 29.99,
+        "package_size_id": 1,
+        "shipment_prices": {
+            "domestic": null,
+            "international": null
+        },
+        "color_ids": [],
+        "assigned_photos": [],
+        "measurement_length": null,
+        "measurement_width": null,
+        "item_attributes": [
+            {
+                "code": "material",
+                "ids": []
+            }
+        ]
+    }
+}

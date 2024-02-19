@@ -1,0 +1,12 @@
+{
+    "lang": "en",
+    "fullscreen": false,
+    "auto-login": true,
+    "delete-notifs": false,
+    "delete-bills": false,
+    "auto-feedback": true,
+    "del-ship-label": false,
+    "tree-btn-checked": true,
+    "my-rw-btn-checked": false,
+    "sp-val": 1000
+}
