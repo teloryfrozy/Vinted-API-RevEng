@@ -1,16 +1,8 @@
-<!-- settings page with language options
-french or english
 
-
-imap credentials
-port
-host
-username
-password -->
 
 
 <script>
-  import { Globe2, Mail, Key, Wrench, BellRing, Shield, Palette } from 'lucide-svelte';
+  import { Globe2, Mail, Key, Wrench,  Shield } from 'lucide-svelte';
 
   let settings = {
     language: 'fr',

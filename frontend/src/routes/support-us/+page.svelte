@@ -1,59 +1,96 @@
+<script>
+  import { 
+    HeartIcon, 
+    CreditCardIcon,
+    GiftIcon,
+    CopyIcon,
+    CheckIcon
+  } from 'lucide-svelte';
 
+  let codeCopied = false;
 
-TAB ABOUT:
-Nous sommes deux frères passionnés par le monde du développement et des affaires en ligne. Alors que nous poursuivons nos études, nous avons décidé de mettre à profit notre temps libre pour créer notre propre entreprise dans le domaine de la vente en ligne. Nous nous spécialisons dans l'achat et la revente de consoles Nintendo, mais nous avons également diversifié notre offre pour répondre aux besoins variés de notre clientèle. 🎮💼
-    Notre parcours entrepreneurial a débuté de zéro, sans aucun capital initial. Avec beaucoup de détermination et d'efforts, nous avons réussi à créer une entreprise prospère qui génère un chiffre d'affaires mensuel d'environ 2000€. Notre petite échelle nous permet de fournir un service attentionné et personnalisé à chacun de nos clients. 💪🌱
-    En tant que développeur, j'utilise mes compétences techniques pour optimiser notre présence en ligne, améliorer l'expérience utilisateur sur notre site web et développer des fonctionnalités innovantes pour faciliter les transactions. Mon frère, quant à lui, se charge de la gestion des stocks, de la recherche de produits de qualité et de la gestion des commandes. 🖥️📦
-    Nous accordons une grande importance à la satisfaction de nos clients. Nous mettons tout en œuvre pour offrir des produits de haute qualité, une livraison rapide et un service client réactif. Notre objectif est de créer une expérience d'achat agréable et fiable pour chaque personne qui fait confiance à notre entreprise. 😊📦
-    Bien que nous soyons encore étudiants, nous avons acquis une expérience précieuse dans le domaine du commerce en ligne. Nous sommes fiers de notre parcours et de notre capacité à concilier nos études avec notre activité entrepreneuriale. Nous sommes constamment à la recherche de nouvelles opportunités pour développer notre entreprise et continuer à offrir des produits de qualité à nos clients. 📚💼
-    Nous sommes ravis de partager notre passion et notre savoir-faire avec vous, et nous espérons avoir l'occasion de vous servir bientôt. N'hésitez pas à nous contacter pour toute question ou demande spécifique, nous serons ravis de vous aider. ✉️🤝
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText('AURO2755');
+      codeCopied = true;
+      setTimeout(() => codeCopied = false, 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
+</script>
 
+<div class="mx-auto max-w-4xl px-4 py-8">
+  <div class="mb-8 rounded-lg bg-white p-6 shadow">
+    <div class="mb-4 flex items-center">
+      <HeartIcon class="mr-2 h-6 w-6 text-purple-600" />
+      <h2 class="text-xl font-semibold">Nous Soutenir</h2>
+    </div>
+    
+    <p class="text-gray-600">
+      C'est une app de logistique qu'on a développée pour notre business Vinted il y a 2 ans, à côté de nos études. Si elle vous est utile, vous pouvez nous soutenir via ces offres avantageuses !
+    </p>
+  </div>
 
-TAB Affiliation:
-j'ai fait cette app gratos et open soruce pr vous aider à automatiser vinted 
-si vs voulez me soutenir:
-Voici quelque liens d'affiliations qui vous permettent de gagner jusqu'à 100€ si vous les utilisez, ils nous aide aussi beaucoup alors gagnant-gagnant.
+  <!-- Coupert -->
+  <div class="mb-6 rounded-lg bg-white p-6 shadow">
+    <div class="mb-4 flex items-center justify-between">
+      <h3 class="text-lg font-medium text-gray-900">Coupert</h3>
+      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">10€ offerts</span>
+    </div>
+    
+    <p class="mb-4 text-gray-600">
+      Extension qui trouve automatiquement les meilleurs codes promo. Gagnez 10€ en créant un compte et en dépensant 30€ sur l'un des 15 000 sites partenaires.
+    </p>
+    
+    <a 
+      href="https://www.coupert.com/ref/ju51oa"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
+    >
+      <GiftIcon class="mr-2 h-4 w-4" />
+      Profiter de l'offre
+    </a>
+  </div>
 
-Coupert :
+  <!-- Boursorama -->
+  <div class="rounded-lg bg-white p-6 shadow">
+    <div class="mb-4 flex items-center justify-between">
+      <h3 class="text-lg font-medium text-gray-900">Boursorama Banque</h3>
+      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">Jusqu'à 170€ offerts</span>
+    </div>
+    
+    <ul class="mb-4 list-inside list-disc text-gray-600">
+      <li>80€ à 120€ de prime de bienvenue</li>
+      <li>50€ supplémentaires avec EasyMove</li>
+      <li>Carte bancaire gratuite avec 1 utilisation par mois (sinon 5€)</li>
+    </ul>
+    
+    <div class="flex items-center gap-4">
+      <a 
+        href="https://bour.so/FHnn31mt9L"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
+      >
+        <CreditCardIcon class="mr-2 h-4 w-4" />
+        Ouvrir un compte
+      </a>
 
------ Résumé -----
-
-Coupert est une extension de navigateur qui permet aux utilisateurs d'économiser de l'argent lorsqu'ils font des achats en ligne. En installant Coupert, les utilisateurs peuvent bénéficier de codes de réduction et de remises automatiques lorsqu'ils effectuent des achats sur des sites partenaires.
-Lorsque vous naviguez sur un site marchand pris en charge par Coupert, l'extension s'active automatiquement et recherche les meilleures offres et réductions disponibles. Elle affiche ensuite ces codes de réduction ou remises spéciales à appliquer lors de la finalisation de l'achat.
-Coupert simplifie le processus de recherche de remises en ligne, permettant aux utilisateurs d'économiser du temps et de l'argent. Il est compatible avec de nombreux sites de commerce électronique populaires, offrant ainsi aux utilisateurs la possibilité de trouver des offres intéressantes lors de leurs achats en ligne.
-
------ Gain -----
-
- ¤ 10€ pour chacun si vous créez un compte sur l'application Iphone avec notre lien et dépenser 30€ sous 60 jours sur l'un des 15 000 sites partenaires
-
-
------ Lien -----
-
-https://www.coupert.com/ref/ju51oa
-
-
-
-Boursorama :
-
------ Résumé -----
-
-Boursorama est une banque en ligne française fondée en 1998 par 1998 par Patrice Legrand et Stéphane Mathieu. Elle propose une large gamme de services bancaires et financiers, tels que les comptes courants, les livrets d'épargne, les assurances, les crédits et les services de courtage en ligne.
-L'un des principaux avantages de Boursorama est sa plateforme de courtage en ligne, qui permet aux investisseurs d'acheter et de vendre des actions, des fonds d'investissement, des obligations et d'autres instruments financiers. Boursorama propose également des outils de recherche et d'analyse pour aider les investisseurs à prendre des décisions éclairées.
-En tant que banque en ligne, Boursorama offre également des services bancaires pratiques, tels que la gestion des comptes en ligne, les virements, les paiements par carte, les chéquiers électroniques et l'accès à un réseau de distributeurs automatiques de billets.
-Boursorama est réputée pour ses tarifs compétitifs et sa facilité d'utilisation. Elle s'est imposée comme l'une des principales banques en ligne en France et compte des millions de clients.
-
------ Gain -----
-
- ¤ + 80 € minimum pour une souscription, pouvant aller jusqu'à 120€ selon les offres du moment pour le filleule et 30€ pour le parrain
- ¤ + 50€ si changement de banque avec EasyMove
-
------ Lien -----
-
-https://bour.so/FHnn31mt9L
-
-ou utilisation du code AURO2755
-
-
-
-Merci du fond du coeur pour votre soutien
+      <button
+        on:click={copyToClipboard}
+        class="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+      >
+        {#if codeCopied}
+          <CheckIcon class="mr-2 h-4 w-4 text-green-500" />
+          Code copié !
+        {:else}
+          <CopyIcon class="mr-2 h-4 w-4" />
+          Copier le code AURO2755
+        {/if}
+      </button>
+    </div>
+  </div>
+</div>
 
