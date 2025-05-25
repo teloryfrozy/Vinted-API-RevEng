@@ -11,7 +11,11 @@
 		NetworkIcon,
 		MailIcon,
 		InboxIcon,
-		MessageSquareIcon
+		MessageSquareIcon,
+		LightbulbIcon,
+		CameraIcon,
+		FileTextIcon,
+		HeartHandshakeIcon
 	} from 'lucide-svelte';
 </script>
 
@@ -95,6 +99,33 @@
 					<div class="flex items-start space-x-3">
 						<MessageSquareIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
 						<p class="text-sm text-gray-600">Supprimer vos anciennes conversations</p>
+					</div>
+				</div>
+			</div>
+		</a>
+
+		<!-- Conseils et Astuces -->
+		<a href="/help" class="group relative overflow-hidden rounded-xl bg-white p-8 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
+			<div class="absolute right-0 top-0 h-32 w-32 translate-x-8 translate-y-[-50%] transform opacity-5 transition-transform group-hover:translate-x-4">
+				<LightbulbIcon class="h-full w-full" />
+			</div>
+			<div class="relative">
+				<div class="mb-6 flex items-center">
+					<LightbulbIcon class="mr-3 h-8 w-8 text-yellow-500" />
+					<h2 class="text-2xl font-semibold text-gray-900 group-hover:text-yellow-500">Conseils de Vente</h2>
+				</div>
+				<div class="grid gap-4 md:grid-cols-3">
+					<div class="flex items-start space-x-3">
+						<CameraIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-500" />
+						<p class="text-sm text-gray-600">Astuces pour des photos qui convertissent</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<FileTextIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-500" />
+						<p class="text-sm text-gray-600">Rédiger des descriptions efficaces</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<HeartHandshakeIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-500" />
+						<p class="text-sm text-gray-600">Retours d'expérience et conseils personnalisés</p>
 					</div>
 				</div>
 			</div>
