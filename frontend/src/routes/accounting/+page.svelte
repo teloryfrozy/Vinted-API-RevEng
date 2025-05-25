@@ -1,5 +1,5 @@
 <script>
-  import { Mail, Trash2, AlertCircle, MessageSquare, Printer, Star, Settings2 } from 'lucide-svelte';
+  import { Mail, Trash2, AlertCircle, MessageSquare, Printer, Star, Settings2 } from '@lucide/svelte';
 
   let showAlert = true;
   let monthsToKeep = 2;

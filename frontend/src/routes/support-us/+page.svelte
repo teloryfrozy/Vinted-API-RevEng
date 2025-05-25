@@ -5,7 +5,7 @@
     GiftIcon,
     CopyIcon,
     CheckIcon
-  } from 'lucide-svelte';
+  } from '@lucide/svelte';
 
   let codeCopied = false;
 

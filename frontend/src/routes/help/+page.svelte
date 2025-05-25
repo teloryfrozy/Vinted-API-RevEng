@@ -10,7 +10,7 @@
     SmileIcon,
     UsersIcon,
     StarIcon
-  } from 'lucide-svelte';
+  } from '@lucide/svelte';
 
   let activeTab = 'tips';
 </script>

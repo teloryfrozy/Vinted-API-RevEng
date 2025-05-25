@@ -1,5 +1,5 @@
 <script>
-  import { Home, Heart, Github, Settings } from 'lucide-svelte';
+  import { Home, Heart, Github, Settings } from '@lucide/svelte';
 </script>
 
 <nav class="bg-white shadow-lg">

@@ -2,7 +2,7 @@
 
 
 <script>
-  import { Globe2, Mail, Key, Wrench,  Shield } from 'lucide-svelte';
+  import { Globe, Mail, Key, Shield, Wrench } from '@lucide/svelte';
 
   let settings = {
     language: 'fr',
@@ -22,7 +22,7 @@
   <div class="mb-8 flex items-center justify-between">
     <h1 class="text-3xl font-bold text-gray-900">Paramètres</h1>
     <button class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-      <Wrench class="mr-2 h-4 w-4" />
+        <Wrench class="mr-2 h-4 w-4" />
       Sauvegarder
     </button>
   </div>
@@ -31,7 +31,7 @@
     <!-- Préférences Générales -->
     <div class="rounded-lg bg-white p-6 shadow">
       <div class="mb-6 flex items-center border-b pb-4">
-        <Globe2 class="mr-2 h-5 w-5 text-purple-600" />
+        <Globe class="mr-2 h-5 w-5 text-purple-600" />
         <h2 class="text-xl font-semibold text-gray-900">Préférences Générales</h2>
       </div>
 

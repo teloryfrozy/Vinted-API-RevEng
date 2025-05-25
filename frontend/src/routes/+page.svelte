@@ -16,7 +16,7 @@
 		CameraIcon,
 		FileTextIcon,
 		HeartHandshakeIcon
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-12">

@@ -1,7 +1,7 @@
  
 
 <script>
-  import { Users, AlertCircle, Key, History, Loader2 } from 'lucide-svelte';
+  import { Users, AlertCircle, Key, History, Loader2 } from '@lucide/svelte';
 
   let showAlert = true;
   let isFollowing = false;

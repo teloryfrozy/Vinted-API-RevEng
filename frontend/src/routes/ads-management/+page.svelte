@@ -1,5 +1,5 @@
 <script>
-  import { RefreshCw, Trash2, RotateCw, AlertCircle, ShoppingBag, Key, Mail } from 'lucide-svelte';
+  import { RefreshCw, Trash2, RotateCw, AlertCircle, ShoppingBag, Key, Mail } from '@lucide/svelte';
 
   let showAlert = true;
 </script>
