@@ -5,6 +5,7 @@ A local tool to help manage Vinted seller activities more efficiently.
 ## Features
 
 ### Core Features
+
 - Automated shipping label management
 - Custom thank-you message integration
 - Automated buyer communications
@@ -15,6 +16,7 @@ A local tool to help manage Vinted seller activities more efficiently.
 - Sales analytics and accounting exports
 
 ### Email Management
+
 - Automated email sorting and cleanup
 - Smart notification handling
 
@@ -39,10 +41,6 @@ npm run preview # Preview at http://localhost:4173/
 - For local use only - no authentication system implemented
 - Currently being refactored using Svelte + FastAPI + SQLite
 
-
 ## Legal Notice
 
 This tool is for personal use only and must comply with Vinted's terms of service. Any automated data collection must respect platform policies and user privacy.
-
- 
-
