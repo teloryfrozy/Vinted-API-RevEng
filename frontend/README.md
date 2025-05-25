@@ -1,38 +1,48 @@
-# sv
+# Vinted Management Tool
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A local tool to help manage Vinted seller activities more efficiently.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+### Core Features
+- Automated shipping label management
+- Custom thank-you message integration
+- Automated buyer communications
+- Conversation management
+- Feedback automation
+- Item database for quick re-listing
+- Automated label printing (requires Adobe Reader)
+- Sales analytics and accounting exports
+
+### Email Management
+- Automated email sorting and cleanup
+- Smart notification handling
+
+## Setup
 
 ```bash
-# create a new project in the current directory
-npx sv create
+# Install dependencies
+npm install
 
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+# Development server
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
+# Production build
 npm run build
+npm run preview # Preview at http://localhost:4173/
 ```
 
-You can preview the production build with `npm run preview`.
+## Important Notes
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- Use a dedicated Vinted email address
+- Access token needs periodic renewal (stored in cookies)
+- For local use only - no authentication system implemented
+- Currently being refactored using Svelte + FastAPI + SQLite
+
+
+## Legal Notice
+
+This tool is for personal use only and must comply with Vinted's terms of service. Any automated data collection must respect platform policies and user privacy.
+
+ 
+
