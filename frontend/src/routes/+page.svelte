@@ -1,42 +1,104 @@
-<div class="mx-auto max-w-7xl px-4 py-6">
-	<div class="rounded-lg bg-white p-6 shadow">
-		<h1 class="mb-6 text-2xl font-bold text-gray-900">Vinted Automation Tools</h1>
+<script>
+	import { 
+		ShoppingBagIcon,
+		Users2Icon,
+		MailCheckIcon,
+		ArrowUpCircleIcon,
+		CopyIcon,
+		Trash2Icon,
+		UserPlus2Icon,
+		SaveIcon,
+		NetworkIcon,
+		MailIcon,
+		InboxIcon,
+		MessageSquareIcon
+	} from 'lucide-svelte';
+</script>
 
-		<div class="space-y-4">
-			<div class="border-b pb-4">
-				<a href="/ads-management" class="group">
-					<h2 class="text-xl font-semibold text-gray-900 group-hover:text-purple-600">Gérer les annonces</h2>
-					<ul class="mt-2 space-y-2 text-gray-600">
-						<li>• Automatiser la gestion de vos annonces</li>
-						<li>• Remonter vos annonces en tête de liste</li>
-						<li>• Automatiser la vente de vos doublons</li>
-						<li>• Supprimer vos articles vendus</li>
-					</ul>
-				</a>
-			</div>
+<div class="mx-auto max-w-7xl px-4 py-12">
+	<h1 class="mb-12 text-center text-4xl font-bold text-gray-900">Vinted Automation Tools</h1>
 
-			<div class="border-b pb-4">
-				<a href="/follow-mass" class="group">
-					<h2 class="text-xl font-semibold text-gray-900 group-hover:text-purple-600">Suivez en masse</h2>
-					<ul class="mt-2 space-y-2 text-gray-600">
-						<li>• Suivez des dizaines d'utilisateurs en un clic</li>
-						<li>• Sauvegarde d'abonnements automatique</li>
-						<li>• Augmenter vos relations</li>
-					</ul>
-				</a>
+	<div class="grid gap-8">
+		<!-- Gestion des Annonces -->
+		<a href="/ads-management" class="group relative overflow-hidden rounded-xl bg-white p-8 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
+			<div class="absolute right-0 top-0 h-32 w-32 translate-x-8 translate-y-[-50%] transform opacity-5 transition-transform group-hover:translate-x-4">
+				<ShoppingBagIcon class="h-full w-full" />
 			</div>
+			<div class="relative">
+				<div class="mb-6 flex items-center">
+					<ShoppingBagIcon class="mr-3 h-8 w-8 text-purple-600" />
+					<h2 class="text-2xl font-semibold text-gray-900 group-hover:text-purple-600">Gérer les annonces</h2>
+				</div>
+				<div class="grid gap-4 md:grid-cols-3">
+					<div class="flex items-start space-x-3">
+						<ArrowUpCircleIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Remonter vos annonces en tête de liste</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<CopyIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Automatiser la vente de vos doublons</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<Trash2Icon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Supprimer vos articles vendus</p>
+					</div>
+				</div>
+			</div>
+		</a>
 
-			<div>
-				<a href="/accounting" class="group">
-					<h2 class="text-xl font-semibold text-gray-900 group-hover:text-purple-600">Secrétariat</h2>
-					<ul class="mt-2 space-y-2 text-gray-600">
-						<li>• Paramétrer la gestion de vos mails</li>
-						<li>• Trier vos mails de manière passive</li>
-						<li>• Supprimer vos anciennes conversations vinted</li>
-					</ul>
-				</a>
+		<!-- Suivi en Masse -->
+		<a href="/follow-mass" class="group relative overflow-hidden rounded-xl bg-white p-8 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
+			<div class="absolute right-0 top-0 h-32 w-32 translate-x-8 translate-y-[-50%] transform opacity-5 transition-transform group-hover:translate-x-4">
+				<Users2Icon class="h-full w-full" />
 			</div>
-		</div>
+			<div class="relative">
+				<div class="mb-6 flex items-center">
+					<Users2Icon class="mr-3 h-8 w-8 text-purple-600" />
+					<h2 class="text-2xl font-semibold text-gray-900 group-hover:text-purple-600">Suivez en masse</h2>
+				</div>
+				<div class="grid gap-4 md:grid-cols-3">
+					<div class="flex items-start space-x-3">
+						<UserPlus2Icon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Suivez des dizaines d'utilisateurs en un clic</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<SaveIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Sauvegarde d'abonnements automatique</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<NetworkIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Augmentez vos relations</p>
+					</div>
+				</div>
+			</div>
+		</a>
+
+		<!-- Secrétariat -->
+		<a href="/accounting" class="group relative overflow-hidden rounded-xl bg-white p-8 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
+			<div class="absolute right-0 top-0 h-32 w-32 translate-x-8 translate-y-[-50%] transform opacity-5 transition-transform group-hover:translate-x-4">
+				<MailCheckIcon class="h-full w-full" />
+			</div>
+			<div class="relative">
+				<div class="mb-6 flex items-center">
+					<MailCheckIcon class="mr-3 h-8 w-8 text-purple-600" />
+					<h2 class="text-2xl font-semibold text-gray-900 group-hover:text-purple-600">Secrétariat</h2>
+				</div>
+				<div class="grid gap-4 md:grid-cols-3">
+					<div class="flex items-start space-x-3">
+						<MailIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Paramétrer la gestion de vos mails</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<InboxIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Trier vos mails de manière passive</p>
+					</div>
+					<div class="flex items-start space-x-3">
+						<MessageSquareIcon class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500" />
+						<p class="text-sm text-gray-600">Supprimer vos anciennes conversations</p>
+					</div>
+				</div>
+			</div>
+		</a>
 	</div>
 </div>
 
