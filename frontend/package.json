@@ -9,7 +9,7 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-        "format": "prettier --write --config ../.prettierrc.json --ignore-path ../.prettierignore --ignore-unknown '**/*.!(json)'",
+		"format": "prettier --write --config ../.prettierrc.json --ignore-path ../.prettierignore --ignore-unknown '**/*.!(json)'",
 		"lint": "prettier --check ."
 	},
 	"devDependencies": {

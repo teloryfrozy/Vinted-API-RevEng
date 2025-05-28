@@ -44,3 +44,9 @@ npm run preview # Preview at http://localhost:4173/
 ## Legal Notice
 
 This tool is for personal use only and must comply with Vinted's terms of service. Any automated data collection must respect platform policies and user privacy.
+
+
+
+# start the back
+
+ fastapi dev main.py 

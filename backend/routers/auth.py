@@ -1,0 +1,33 @@
+from fastapi import APIRouter
+from pydantic import BaseModel
+from sqlmodel import Session, select
+from config.models import User, get_session
+from fastapi import APIRouter, Depends
+
+router = APIRouter(
+    prefix="/auth",
+)
+
+
+class VintedToken(BaseModel):
+    vintedAccessToken: str
+    vintedRefreshToken: str
+
+
+@router.post("/vinted-token")
+async def save_vinted_token(
+    vinted_token: VintedToken, session: Session = Depends(get_session)
+):
+    user = session.exec(select(User).where(User.id == 1)).first()
+    if user:
+        user.vinted_access_token = vinted_token.vintedAccessToken
+        user.vinted_refresh_token = vinted_token.vintedRefreshToken
+    else:
+        user = User(
+            id=1,
+            vinted_access_token=vinted_token.vintedAccessToken,
+            vinted_refresh_token=vinted_token.vintedRefreshToken,
+        )
+    session.add(user)
+    session.commit()
+    return {"success": True}

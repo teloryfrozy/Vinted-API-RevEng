@@ -44,7 +44,7 @@
     </p>
     
     <a 
-      href="https://www.coupert.com/ref/ju51oa"
+      href="https://www.coupert.com?invite_code=4822D6&inviter_source=web5"
       target="_blank"
       rel="noopener noreferrer"
       class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
@@ -69,7 +69,7 @@
     
     <div class="flex items-center gap-4">
       <a 
-        href="https://bour.so/FHnn31mt9L"
+        href="https://www.boursobank.com/landing/parrainage?code_parrain=AURO2755"
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
