@@ -256,6 +256,36 @@ async def delete_sold_items(vinted_token: str = Depends(validate_vinted_token)):
     return {"message": "Sold items deleted"}
 
 @router.delete("/all-ads")
-async def delete_all_ads():
+async def delete_all_ads(vinted_token: str = Depends(validate_vinted_token)):
     """Deletes all ads"""
+    headers = get_vinted_headers(vinted_token)
+    page = 1
+    
+    while True:
+        USER_ID= "49902417"
+        url = f"{API_URL}wardrobe/{USER_ID}/items?page={page}&per_page=20&order=revelance"
+        response = requests.get(url, headers=headers)
+        nb_items_deleted = 0
+        
+        if response.status_code != 200:
+            break
+            
+        data = response.json() 
+        items = data["items"]
+        
+        if not items:
+            break
+            
+        for item in items: 
+ 
+            if nb_items_deleted == 5:
+                sleep(30)
+                nb_items_deleted = 0
+
+            response = requests.delete(f"{API_URL}items/{item['id']}/delete", headers=headers)
+            if response.status_code == 200: 
+                nb_items_deleted += 1
+
+        page += 1
+
     return {"message": "All ads deleted"}
