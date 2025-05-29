@@ -108,6 +108,7 @@
                 un clic.
             </p>
             <div class="grid grid-cols-2 gap-3">
+                <!-- todo: sélection les n plus vieux articles à rafraichir -->
                 <button
                     class="inline-flex items-center justify-center space-x-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                 >

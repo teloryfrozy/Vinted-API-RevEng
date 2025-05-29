@@ -1,3 +1,11 @@
+"""
+TODO: 
+- save the user id in the database + add a input front
+- add a input front to select the number of n last ads to refresh 
+- finish the refresh ads function
+"""
+
+
 import datetime
 import requests
 import re
@@ -24,37 +32,15 @@ class Photo(BaseModel):
 class Price(BaseModel):
     currency_code: str
     amount: float
-
-class ItemInfo(BaseModel):
-    id: Optional[int]
-    currency: str
-    title: str
-    description: str
-    brand_id: Optional[int]
-    brand: Optional[str]
-    size_id: Optional[int]
-    catalog_id: int
-    isbn: Optional[str]
-    is_unisex: bool
-    is_for_sell: bool = True
-    status_id: int
-    video_game_rating_id: Optional[int]
-    price: float
-    package_size_id: Optional[int]
-    shipment_prices: dict
-    color_ids: Optional[List[int]]
-    assigned_photos: List[dict] = []
-    measurement_length: Optional[float]
-    measurement_width: Optional[float]
-    item_attributes: dict
-    temp_uuid: Optional[str] = None
+ 
 
 # --- Helper Functions --- #
 def get_vinted_headers(access_token: str) -> dict:
     """Returns headers for Vinted API requests"""
     return {
         **BASE_HEADERS,
-        "Cookie": f"_vinted_fr_session={access_token}"
+        # "Cookie": f"_vinted_fr_session={access_token}"
+        "Cookie": f"access_token_web={access_token}"
     }
 
 def validate_vinted_token(session: Session = Depends(get_session)) -> str:
@@ -73,16 +59,16 @@ def validate_vinted_token(session: Session = Depends(get_session)) -> str:
             detail="Vinted token has expired. Please login again."
         )
 
-    headers = get_vinted_headers(auth.access_token)
-    response = requests.get(f"{API_URL}users/self", headers=headers)
+    headers = get_vinted_headers(auth.vinted_access_token)
+    response = requests.get(f"{API_URL}users/countries", headers=headers)
     
     if response.status_code != 200:
         raise HTTPException(
             status_code=401,
-            detail="Invalid Vinted token. Please login again."
+            detail="Token refused by Vinted server. Please update your token."
         )
 
-    return auth.access_token
+    return auth.vinted_access_token
 
 def extract_photos_urls(photos: List[Photo]) -> List[str]:
     """Extracts photo URLs from photos data"""
@@ -159,21 +145,27 @@ async def refresh_ads(vinted_token: str = Depends(validate_vinted_token)):
     page = 1
     
     while True:
-        url = f"{API_URL}users/0/items?page={page}&per_page=96&order=revelance"
+        # todo save the user id in the database + add a input front
+        USER_ID= "49902417"
+        url = f"{API_URL}wardrobe/{USER_ID}/items?page={page}&per_page=20&order=revelance"
         response = requests.get(url, headers=headers)
         
         if response.status_code != 200:
             break
             
-        data = response.json()
+        data = response.json() 
         items = data["items"]
         
         if not items:
             break
             
-        for item in items:
-            if not item["is_visible"]:
+        for item in items: 
+
+            if not (item["item_closing_action"] == None and item["is_reserved"] == False and item["is_closed"] == False and item["is_hidden"] == False):
                 continue
+
+            continue
+             
                 
             # Prepare item data
             item_info = prepare_item_info(item)
@@ -227,8 +219,40 @@ async def refresh_ads(vinted_token: str = Depends(validate_vinted_token)):
 
  
 @router.delete("/sold-items")
-async def delete_sold_items():
-    """Deletes all sold items"""
+async def delete_sold_items(vinted_token: str = Depends(validate_vinted_token)):
+    """Deletes all sold items""" 
+    headers = get_vinted_headers(vinted_token)
+    page = 1
+    
+    while True:
+        USER_ID= "49902417"
+        url = f"{API_URL}wardrobe/{USER_ID}/items?page={page}&per_page=20&order=revelance"
+        response = requests.get(url, headers=headers)
+        nb_items_deleted = 0
+        
+        if response.status_code != 200:
+            break
+            
+        data = response.json() 
+        items = data["items"]
+        
+        if not items:
+            break
+            
+        for item in items: 
+            if not (item["item_closing_action"] == "sold" and item["is_closed"] == True):
+                continue
+ 
+            if nb_items_deleted == 5:
+                sleep(30)
+                nb_items_deleted = 0
+
+            response = requests.delete(f"{API_URL}items/{item['id']}/delete", headers=headers)
+            if response.status_code == 200: 
+                nb_items_deleted += 1
+
+        page += 1
+
     return {"message": "Sold items deleted"}
 
 @router.delete("/all-ads")
