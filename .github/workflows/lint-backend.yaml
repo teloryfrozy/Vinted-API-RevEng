@@ -1,0 +1,25 @@
+name: Lint Backend Code
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run black formatter
+        run: |
+          pip install git+https://github.com/psf/black
+          python -m black .
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply backend code formatting changes
+          branch: ${{ github.head_ref }}
