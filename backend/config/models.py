@@ -25,9 +25,19 @@ async def lifespan(app: FastAPI):
     # stuff after app shutdown
 
 
+class FollowedUser(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    userId: int | None = Field(foreign_key="user.id")
+    followedUserId: int | None = Field()
+
 
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    vinted_access_token: str = Field()
-    vinted_refresh_token: str = Field()
+    vinted_access_token: str | None = Field()
+    vinted_refresh_token: str | None = Field()
     expires_at: datetime | None = Field()
+    imapDomain: str | None = Field()
+    imapPort: int | None = Field()
+    imapUsername: str | None = Field()
+    imapPassword: str | None = Field()
+    userId: int | None = Field()

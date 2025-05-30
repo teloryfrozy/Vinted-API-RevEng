@@ -1,19 +1,18 @@
 """
 TODO: 
-- save the user id in the database + add a input front
 - add a input front to select the number of n last ads to refresh 
 - finish the refresh ads function
 """
 
-
-import datetime
+ 
 import requests
 import re
 from time import sleep
-from typing import List, Optional
-from fastapi import HTTPException, APIRouter, Depends
+from typing import List 
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from constants import API_URL, BASE_HEADERS
+from utils import get_vinted_headers
+from constants import API_URL 
 from sqlmodel import Session, select
 from config.models import User, get_session
 
@@ -34,41 +33,7 @@ class Price(BaseModel):
     amount: float
  
 
-# --- Helper Functions --- #
-def get_vinted_headers(access_token: str) -> dict:
-    """Returns headers for Vinted API requests"""
-    return {
-        **BASE_HEADERS,
-        # "Cookie": f"_vinted_fr_session={access_token}"
-        "Cookie": f"access_token_web={access_token}"
-    }
 
-def validate_vinted_token(session: Session = Depends(get_session)) -> str:
-    """Validates the Vinted token from database"""
-    auth = session.exec(select(User).order_by(User.id.desc())).first()
-    
-    if not auth:
-        raise HTTPException(
-            status_code=401, 
-            detail="No Vinted authentication found. Please login first."
-        )
-
-    if auth.expires_at and auth.expires_at < datetime.datetime.now():
-        raise HTTPException(
-            status_code=401,
-            detail="Vinted token has expired. Please login again."
-        )
-
-    headers = get_vinted_headers(auth.vinted_access_token)
-    response = requests.get(f"{API_URL}users/countries", headers=headers)
-    
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=401,
-            detail="Token refused by Vinted server. Please update your token."
-        )
-
-    return auth.vinted_access_token
 
 def extract_photos_urls(photos: List[Photo]) -> List[str]:
     """Extracts photo URLs from photos data"""
@@ -138,16 +103,14 @@ async def upload_photos(urls: List[str], temp_uuid: str, headers: dict) -> List[
     return photo_ids
  
 @router.get("/refresh-ads")
-async def refresh_ads(vinted_token: str = Depends(validate_vinted_token)):
+async def refresh_ads(headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)):
     """Refreshes ads available for the authenticated profile"""
-    headers = get_vinted_headers(vinted_token)
     same_row = 0
     page = 1
     
-    while True:
-        # todo save the user id in the database + add a input front
-        USER_ID= "49902417"
-        url = f"{API_URL}wardrobe/{USER_ID}/items?page={page}&per_page=20&order=revelance"
+    while True: 
+        user = session.exec(select(User).where(User.id == 1)).first() 
+        url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
         response = requests.get(url, headers=headers)
         
         if response.status_code != 200:
@@ -219,14 +182,13 @@ async def refresh_ads(vinted_token: str = Depends(validate_vinted_token)):
 
  
 @router.delete("/sold-items")
-async def delete_sold_items(vinted_token: str = Depends(validate_vinted_token)):
+async def delete_sold_items(headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)):
     """Deletes all sold items""" 
-    headers = get_vinted_headers(vinted_token)
     page = 1
     
     while True:
-        USER_ID= "49902417"
-        url = f"{API_URL}wardrobe/{USER_ID}/items?page={page}&per_page=20&order=revelance"
+        user = session.exec(select(User).where(User.id == 1)).first() 
+        url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
         response = requests.get(url, headers=headers)
         nb_items_deleted = 0
         
@@ -256,14 +218,13 @@ async def delete_sold_items(vinted_token: str = Depends(validate_vinted_token)):
     return {"message": "Sold items deleted"}
 
 @router.delete("/all-ads")
-async def delete_all_ads(vinted_token: str = Depends(validate_vinted_token)):
+async def delete_all_ads(headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)):
     """Deletes all ads"""
-    headers = get_vinted_headers(vinted_token)
     page = 1
     
     while True:
-        USER_ID= "49902417"
-        url = f"{API_URL}wardrobe/{USER_ID}/items?page={page}&per_page=20&order=revelance"
+        user = session.exec(select(User).where(User.id == 1)).first() 
+        url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
         response = requests.get(url, headers=headers)
         nb_items_deleted = 0
         

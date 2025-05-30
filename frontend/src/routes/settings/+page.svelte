@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { Globe, Mail, Key, Shield, Wrench } from "@lucide/svelte";
+    import { Globe, Mail,  Shield, Wrench } from "@lucide/svelte";
     import { fetchData } from "../../global/fetchData";
     import Notification from "../../global/components/NotificationCard.svelte";
- 
+
     let showNotif = false;
     let message = "";
     let type = "";
@@ -18,14 +18,28 @@
             password: "",
         },
         vintedToken: "",
+        vintedAccessToken: "",
+        vintedRefreshToken: "",
+        userProfileURL: "",
     };
 
     async function saveToken() {
-        console.log(settings.vintedToken);
-        const result = await fetchData("POST", "auth/vinted-token", { vintedAccessToken: settings.vintedToken, vintedRefreshToken: settings.vintedToken });
+        const tokenData = {
+            vintedAccessToken: settings.vintedAccessToken ,
+            vintedRefreshToken: settings.vintedRefreshToken ,
+        };
+
+        if (!tokenData.vintedAccessToken && !tokenData.vintedRefreshToken) {
+            showNotif = true;
+            message = "Au moins un token est requis";
+            type = "error";
+            return;
+        }
+
+        const result = await fetchData("POST", "auth/vinted-token", tokenData);
         if (result.success) {
             showNotif = true;
-            message = "Token sauvegardé avec succès";
+            message = "Token(s) sauvegardé(s) avec succès";
             type = "success";
         } else {
             showNotif = true;
@@ -33,6 +47,19 @@
             type = "error";
         }
     }
+
+    async function saveSettings() {
+        const result = await fetchData("POST", "auth/settings", settings);
+        if (result.success) {
+            showNotif = true;
+            message = "Paramètres sauvegardés avec succès";
+            type = "success";
+        } else {
+            showNotif = true;
+            message = result.error as string;
+            type = "error";
+        }
+    } 
 </script>
 
 {#if showNotif}
@@ -42,6 +69,7 @@
     <div class="mb-8 flex items-center justify-between">
         <h1 class="text-3xl font-bold text-gray-900">Paramètres</h1>
         <button
+            on:click={saveSettings}
             class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
         >
             <Wrench class="mr-2 h-4 w-4" />
@@ -49,16 +77,14 @@
         </button>
     </div>
 
-    <div class="grid gap-6 md:grid-cols-2">
-        <!-- Préférences Générales -->
+    <div class="grid gap-6 md:grid-cols-2"> 
         <div class="rounded-lg bg-white p-6 shadow">
             <div class="mb-6 flex items-center border-b pb-4">
                 <Globe class="mr-2 h-5 w-5 text-purple-600" />
                 <h2 class="text-xl font-semibold text-gray-900">Préférences Générales</h2>
             </div>
 
-            <div class="space-y-4">
-                <!-- Langue -->
+            <div class="space-y-4"> 
                 <div>
                     <p>Langue</p>
                     <select
@@ -69,10 +95,19 @@
                         <option value="en">English</option>
                     </select>
                 </div>
+                <div>
+                    <p class="block text-sm font-medium text-gray-700">Profil Vinted</p>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input
+                            bind:value={settings.userProfileURL}
+                            placeholder="https://www.vinted.fr/users/ID"
+                            class="block w-full flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Configuration Email -->
+ 
         <div class="rounded-lg bg-white p-6 shadow">
             <div class="mb-6 flex items-center border-b pb-4">
                 <Mail class="mr-2 h-5 w-5 text-purple-600" />
@@ -122,33 +157,42 @@
                 </div>
             </div>
         </div>
-
-        <!-- Token Vinted -->
+ 
         <div class="rounded-lg bg-white p-6 shadow md:col-span-2">
             <div class="mb-6 flex items-center border-b pb-4">
                 <Shield class="mr-2 h-5 w-5 text-purple-600" />
                 <h2 class="text-xl font-semibold text-gray-900">Token Vinted</h2>
+                <p class="mt-2 text-sm text-gray-500 ml-2">
+                    Les tokens sont nécessaires pour automatiser les actions sur Vinted
+                </p>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <p class="block text-sm font-medium text-gray-700">Token d'authentification</p>
+                    <p class="block text-sm font-medium text-gray-700">Access Token</p>
                     <div class="mt-1 flex rounded-md shadow-sm">
                         <input
-                            bind:value={settings.vintedToken}
-                            placeholder="Collez votre token Vinted ici"
-                            class="block w-full flex-1 rounded-none rounded-l-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                            bind:value={settings.vintedAccessToken}
+                            placeholder="Collez votre access token Vinted ici"
+                            class="block w-full flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                         />
-                        <button
-                            on:click={saveToken}
-                            class="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-gray-500 hover:bg-gray-100"
-                        >
-                            Save
-                        </button>
                     </div>
-                    <p class="mt-2 text-sm text-gray-500">
-                        Le token est nécessaire pour automatiser les actions sur Vinted
-                    </p>
+                </div>
+                <div>
+                    <p class="block text-sm font-medium text-gray-700">Refresh Token</p>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input
+                            bind:value={settings.vintedRefreshToken}
+                            placeholder="Collez votre refresh token Vinted ici"
+                            class="block w-full flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                        />
+                    </div>
+                    <button
+                        on:click={saveToken}
+                        class="mt-4 inline-flex w-full items-center justify-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                    >
+                        Sauvegarder les tokens
+                    </button>
                 </div>
             </div>
         </div>

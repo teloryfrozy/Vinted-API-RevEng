@@ -27,3 +27,5 @@ py_env/
 database.db
 __pycache__/
 dist/
+alembic/
+alembic.ini

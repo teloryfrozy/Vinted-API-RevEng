@@ -58,7 +58,7 @@
 			<div class="relative">
 				<div class="mb-6 flex items-center">
 					<Users2Icon class="mr-3 h-8 w-8 text-purple-600" />
-					<h2 class="text-2xl font-semibold text-gray-900 group-hover:text-purple-600">Suivez en masse</h2>
+					<h2 class="text-2xl font-semibold text-gray-900 group-hover:text-purple-600">Follow Mass</h2>
 				</div>
 				<div class="grid gap-4 md:grid-cols-3">
 					<div class="flex items-start space-x-3">
