@@ -1,18 +1,17 @@
 """
-TODO: 
-- add a input front to select the number of n last ads to refresh 
+TODO:
+- add a input front to select the number of n last ads to refresh
 - finish the refresh ads function
 """
 
- 
 import requests
 import re
 from time import sleep
-from typing import List 
+from typing import List
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from utils import get_vinted_headers
-from constants import API_URL 
+from constants import API_URL
 from sqlmodel import Session, select
 from config.models import User, get_session
 
@@ -25,14 +24,14 @@ class PhotoThumbnail(BaseModel):
     type: str
     url: str
 
+
 class Photo(BaseModel):
     thumbnails: List[PhotoThumbnail]
+
 
 class Price(BaseModel):
     currency_code: str
     amount: float
- 
-
 
 
 def extract_photos_urls(photos: List[Photo]) -> List[str]:
@@ -44,13 +43,15 @@ def extract_photos_urls(photos: List[Photo]) -> List[str]:
                 urls.append(thumbnail.url)
     return urls
 
+
 def prepare_item_info(item_data: dict) -> dict:
     """Prepares item info for re-upload"""
     color_ids = [
-        color_id for color_id in [item_data["color1_id"], item_data["color2_id"]]
+        color_id
+        for color_id in [item_data["color1_id"], item_data["color2_id"]]
         if color_id is not None
     ]
-    
+
     return {
         "id": None,
         "currency": item_data["price"]["currency_code"],
@@ -72,179 +73,191 @@ def prepare_item_info(item_data: dict) -> dict:
         "assigned_photos": [],
         "measurement_length": item_data["measurement_length"],
         "measurement_width": item_data["measurement_width"],
-        "item_attributes": item_data["item_attributes"]
+        "item_attributes": item_data["item_attributes"],
     }
+
 
 async def upload_photos(urls: List[str], temp_uuid: str, headers: dict) -> List[int]:
     """Uploads photos and returns list of photo IDs"""
     photo_ids = []
-    
+
     for i, url in enumerate(urls):
         response = requests.get(url)
         if response.status_code != 200:
             continue
-            
-        files = [('photo[file]', (f'{i}.jpg', response.content, 'image/jpeg'))]
-        payload = {
-            'photo[type]': 'item',
-            'photo[temp_uuid]': temp_uuid
-        }
-        
+
+        files = [("photo[file]", (f"{i}.jpg", response.content, "image/jpeg"))]
+        payload = {"photo[type]": "item", "photo[temp_uuid]": temp_uuid}
+
         response = requests.post(
             "https://www.vinted.fr/api/v2/photos",
             headers=headers,
             data=payload,
-            files=files
+            files=files,
         )
-        
+
         if response.status_code == 200:
             photo_ids.append(response.json()["id"])
-            
+
     return photo_ids
- 
+
+
 @router.get("/refresh-ads")
-async def refresh_ads(headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)):
+async def refresh_ads(
+    headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)
+):
     """Refreshes ads available for the authenticated profile"""
     same_row = 0
     page = 1
-    
-    while True: 
-        user = session.exec(select(User).where(User.id == 1)).first() 
+
+    while True:
+        user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
         response = requests.get(url, headers=headers)
-        
+
         if response.status_code != 200:
             break
-            
-        data = response.json() 
+
+        data = response.json()
         items = data["items"]
-        
+
         if not items:
             break
-            
-        for item in items: 
 
-            if not (item["item_closing_action"] == None and item["is_reserved"] == False and item["is_closed"] == False and item["is_hidden"] == False):
+        for item in items:
+
+            if not (
+                item["item_closing_action"] == None
+                and item["is_reserved"] == False
+                and item["is_closed"] == False
+                and item["is_hidden"] == False
+            ):
                 continue
 
             continue
-             
-                
+
             # Prepare item data
             item_info = prepare_item_info(item)
             photo_urls = extract_photos_urls(item["photos"])
-            
+
             # Handle rate limiting
             if same_row == 15:
                 sleep(30)
                 same_row = 0
-                
+
             # Get temp UUID for upload
-            response = requests.get(
-                "https://www.vinted.fr/items/new",
-                headers=headers
+            response = requests.get("https://www.vinted.fr/items/new", headers=headers)
+            temp_uuid = (
+                re.search(
+                    r'<div id="ItemUpload-react-component-\s*(.*?)\s*"',
+                    response.text,
+                    re.DOTALL,
+                )
+                .group(1)
+                .strip()
             )
-            temp_uuid = re.search(
-                r'<div id="ItemUpload-react-component-\s*(.*?)\s*"',
-                response.text,
-                re.DOTALL
-            ).group(1).strip()
-            
+
             # Upload photos
             photo_ids = await upload_photos(photo_urls, temp_uuid, headers)
-            
+
             # Prepare final item data
             item_info["temp_uuid"] = temp_uuid
             item_info["assigned_photos"] = [
                 {"id": pid, "orientation": 0} for pid in photo_ids
             ]
-            
+
             # Upload item
             response = requests.post(
                 "https://www.vinted.fr/api/v2/items",
                 headers=headers,
-                json={"item": item_info, "feedback_id": None}
+                json={"item": item_info, "feedback_id": None},
             )
-            
+
             if response.status_code == 200:
                 # Delete old item
-                requests.post(
-                    f"{API_URL}items/{item['id']}/delete",
-                    headers=headers
-                )
+                requests.post(f"{API_URL}items/{item['id']}/delete", headers=headers)
                 same_row += 1
-            
+
         page += 1
 
     return {"message": "Ads refresh completed"}
- 
 
 
- 
 @router.delete("/sold-items")
-async def delete_sold_items(headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)):
-    """Deletes all sold items""" 
+async def delete_sold_items(
+    headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)
+):
+    """Deletes all sold items"""
     page = 1
-    
+
     while True:
-        user = session.exec(select(User).where(User.id == 1)).first() 
+        user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
         response = requests.get(url, headers=headers)
         nb_items_deleted = 0
-        
+
         if response.status_code != 200:
             break
-            
-        data = response.json() 
+
+        data = response.json()
         items = data["items"]
-        
+
         if not items:
             break
-            
-        for item in items: 
-            if not (item["item_closing_action"] == "sold" and item["is_closed"] == True):
+
+        for item in items:
+            if not (
+                item["item_closing_action"] == "sold" and item["is_closed"] == True
+            ):
                 continue
- 
+
             if nb_items_deleted == 5:
                 sleep(30)
                 nb_items_deleted = 0
 
-            response = requests.delete(f"{API_URL}items/{item['id']}/delete", headers=headers)
-            if response.status_code == 200: 
+            response = requests.delete(
+                f"{API_URL}items/{item['id']}/delete", headers=headers
+            )
+            if response.status_code == 200:
                 nb_items_deleted += 1
 
         page += 1
 
     return {"message": "Sold items deleted"}
 
+
 @router.delete("/all-ads")
-async def delete_all_ads(headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)):
+async def delete_all_ads(
+    headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)
+):
     """Deletes all ads"""
     page = 1
-    
+
     while True:
-        user = session.exec(select(User).where(User.id == 1)).first() 
+        user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
         response = requests.get(url, headers=headers)
         nb_items_deleted = 0
-        
+
         if response.status_code != 200:
             break
-            
-        data = response.json() 
+
+        data = response.json()
         items = data["items"]
-        
+
         if not items:
             break
-            
-        for item in items: 
- 
+
+        for item in items:
+
             if nb_items_deleted == 5:
                 sleep(30)
                 nb_items_deleted = 0
 
-            response = requests.delete(f"{API_URL}items/{item['id']}/delete", headers=headers)
-            if response.status_code == 200: 
+            response = requests.delete(
+                f"{API_URL}items/{item['id']}/delete", headers=headers
+            )
+            if response.status_code == 200:
                 nb_items_deleted += 1
 
         page += 1
