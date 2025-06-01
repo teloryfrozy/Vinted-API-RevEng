@@ -32,7 +32,7 @@ async function processResponseData(response: Response): Promise<FetchDataResult>
 export async function fetchData(
     method: "POST" | "GET" | "DELETE" | "PUT",
     path: string,
-    body?: Record<string, any>
+    body?: Record<string, any>,
 ): Promise<FetchDataResult> {
     try {
         const response = await fetch(`${API_BASE_URL}${path}`, {
