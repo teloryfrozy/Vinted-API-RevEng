@@ -10,7 +10,7 @@ from time import sleep
 from typing import List
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from utils import get_vinted_headers
+from utils import execute_request, get_vinted_headers
 from constants import API_URL
 from sqlmodel import Session, select
 from config.models import User, get_session
@@ -113,7 +113,7 @@ async def refresh_ads(
     while True:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
-        response = requests.get(url, headers=headers)
+        response = execute_request("get", url, headers)
 
         if response.status_code != 200:
             break
@@ -193,7 +193,7 @@ async def delete_sold_items(
     while True:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
-        response = requests.get(url, headers=headers)
+        response = execute_request("get", url, headers)
         nb_items_deleted = 0
 
         if response.status_code != 200:
@@ -215,8 +215,8 @@ async def delete_sold_items(
                 sleep(30)
                 nb_items_deleted = 0
 
-            response = requests.delete(
-                f"{API_URL}items/{item['id']}/delete", headers=headers
+            response = execute_request(
+                "delete", f"{API_URL}items/{item['id']}/delete", headers
             )
             if response.status_code == 200:
                 nb_items_deleted += 1
@@ -236,7 +236,7 @@ async def delete_all_ads(
     while True:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
-        response = requests.get(url, headers=headers)
+        response = execute_request("get", url, headers)
         nb_items_deleted = 0
 
         if response.status_code != 200:
@@ -254,8 +254,8 @@ async def delete_all_ads(
                 sleep(30)
                 nb_items_deleted = 0
 
-            response = requests.delete(
-                f"{API_URL}items/{item['id']}/delete", headers=headers
+            response = execute_request(
+                "delete", f"{API_URL}items/{item['id']}/delete", headers
             )
             if response.status_code == 200:
                 nb_items_deleted += 1

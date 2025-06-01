@@ -44,7 +44,7 @@
         }
     }
 
-    async function scrapeVintie() {
+    async function scrapVintedUser() {
         if (!vintieUrl) {
             showNotif = true;
             message = "URL Vinted manquante";
@@ -52,14 +52,14 @@
             return;
         }
 
-        const result = fetchData("GET", "follow-mass/scrap-vinted-user", {
+        const result = fetchData("POST", "follow-mass/scrap-vinted-user", {
             urlSeller: vintieUrl,
             mode: scrapeMode,
         });
 
         isFollowing = true;
 
-        result.then((result) => {
+        result.then((result) => { 
             if (!result.success) {
                 showNotif = true;
                 message = result.error as string;
@@ -69,6 +69,7 @@
                 message = "Utilisateurs suivis avec succès";
                 type = "success";
             }
+            isFollowing = false;
         });
     }
 
@@ -80,7 +81,7 @@
             type = "error";
         } else {
             showNotif = true;
-            message = "Abonnements récupérés avec succès";
+            message = `Abonnements récupérés avec succès, ${result.data.nbUsersRecovered} utilisateurs ont été suivis`;
             type = "success";
         }
     }
@@ -259,7 +260,7 @@
                     </div>
 
                     <button
-                        on:click={scrapeVintie}
+                        on:click={scrapVintedUser}
                         class="w-full rounded-md bg-orange-600 px-4 py-2 text-white hover:bg-orange-700"
                     >
                         Récupérer
