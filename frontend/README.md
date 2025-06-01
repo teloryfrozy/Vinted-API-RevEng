@@ -8,8 +8,9 @@ Interface in French only for now.
 ### Prerequisites for Non-Developers
 
 Before starting, you'll need to install:
-* [Node.js](https://nodejs.org/en/download)
-* [Python](https://www.python.org/)
+
+- [Node.js](https://nodejs.org/en/download)
+- [Python](https://www.python.org/)
 
 ### First Time Setup
 
@@ -40,22 +41,21 @@ fastapi dev main.py
 
 ## Features Status
 
-| Feature | Description | Status |
-|---------|-------------|--------|
-| Conversation Cleanup | Auto-delete conversations after x months of inactivity | ⚒️ Under Refactoring |
-| Ad Refresh | Automatic refreshing of listings | ⚒️ Under Refactoring |
-| Sales Analytics | Export transactions, generate graphs & statistics | 📝 To Be Done |
-| Annual Reports | Yearly compatible reporting system | 📝 To Be Done |
-| Favorite Messages | Quick-copy system for 5 favorite messages | 📝 To Be Done |
-| Publication Menu | Database-linked posting system with search functionality | 📝 To Be Done |
-| Shipping Labels | Automatic retrieval of shipping labels | ⚠️ Not Planned |
-| Thank You Messages | Add customizable thank-you messages on shipping labels | ⚠️ Not Planned |
-| Feedback System | Random automated feedback for transactions | ⚠️ Not Planned |
-| Like Notifications | Auto-send notifications to users who liked an item | ⚠️ Not Planned |
-| Auto Purchase Response | Automatic message when a buyer purchases an item | ⚠️ Not Planned |
-| Item Database | Auto re upload for items with multiple copies | ⚠️ Not Planned |
+| Feature                | Description                                              | Status               |
+| ---------------------- | -------------------------------------------------------- | -------------------- |
+| Conversation Cleanup   | Auto-delete conversations after x months of inactivity   | ⚒️ Under Refactoring |
+| Ad Refresh             | Automatic refreshing of listings                         | ⚒️ Under Refactoring |
+| Sales Analytics        | Export transactions, generate graphs & statistics        | 📝 To Be Done        |
+| Annual Reports         | Yearly compatible reporting system                       | 📝 To Be Done        |
+| Favorite Messages      | Quick-copy system for 5 favorite messages                | 📝 To Be Done        |
+| Publication Menu       | Database-linked posting system with search functionality | 📝 To Be Done        |
+| Shipping Labels        | Automatic retrieval of shipping labels                   | ⚠️ Not Planned       |
+| Thank You Messages     | Add customizable thank-you messages on shipping labels   | ⚠️ Not Planned       |
+| Feedback System        | Random automated feedback for transactions               | ⚠️ Not Planned       |
+| Like Notifications     | Auto-send notifications to users who liked an item       | ⚠️ Not Planned       |
+| Auto Purchase Response | Automatic message when a buyer purchases an item         | ⚠️ Not Planned       |
+| Item Database          | Auto re upload for items with multiple copies            | ⚠️ Not Planned       |
 
 ## Legal Notice
 
 This tool is for personal use only and must comply with Vinted's terms of service. Any automated data collection must respect platform policies and user privacy.
- 
