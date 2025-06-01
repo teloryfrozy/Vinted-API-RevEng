@@ -1,50 +1,61 @@
 # Vinted Management Tool
 
-A local tool to help manage Vinted seller activities more efficiently.
+A local tool to help you manage your Vinted account super fast !
+Interface in French only for now.
 
-## Features
+## Getting Started
 
-### Core Features
+### Prerequisites for Non-Developers
 
-- Automated shipping label management
-- Custom thank-you message integration
-- Automated buyer communications
-- Conversation management
-- Feedback automation
-- Item database for quick re-listing
-- Automated label printing (requires Adobe Reader)
-- Sales analytics and accounting exports
+Before starting, you'll need to install:
+* [Node.js](https://nodejs.org/en/download)
+* [Python](https://www.python.org/)
 
-### Email Management
-
-- Automated email sorting and cleanup
-- Smart notification handling
-
-## Setup
+### First Time Setup
 
 ```bash
-# Install dependencies
+cd frontend
 npm install
 
-# Development server
-npm run dev
-
-# Production build
-npm run build
-npm run preview # Preview at http://localhost:4173/
+cd ../backend
+pip install -r requirements.txt
 ```
 
-## Important Notes
+### Running the Application
 
-- Use a dedicated Vinted email address
-- Access token needs periodic renewal (stored in cookies)
-- For local use only - no authentication system implemented
-- Currently being refactored using Svelte + FastAPI + SQLite
+```bash
+# Start Frontend (Development)
+cd frontend
+npm run dev
+# OR for Production
+npm run build
+npm run preview # Access at http://localhost:4173/
+
+# Start Backend (in another terminal)
+cd backend
+fastapi dev main.py
+```
+
+> **Note**: A Docker version might be released in the future to simplify setup for non-developers.
+
+## Features Status
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| Conversation Cleanup | Auto-delete conversations after x months of inactivity | ⚒️ Under Refactoring |
+| Ad Refresh | Automatic refreshing of listings | ⚒️ Under Refactoring |
+| Sales Analytics | Export transactions, generate graphs & statistics | 📝 To Be Done |
+| Annual Reports | Yearly compatible reporting system | 📝 To Be Done |
+| Favorite Messages | Quick-copy system for 5 favorite messages | 📝 To Be Done |
+| Publication Menu | Database-linked posting system with search functionality | 📝 To Be Done |
+| Shipping Labels | Automatic retrieval of shipping labels | ⚠️ Not Planned |
+| Thank You Messages | Add customizable thank-you messages on shipping labels | ⚠️ Not Planned |
+| Feedback System | Random automated feedback for transactions | ⚠️ Not Planned |
+| Like Notifications | Auto-send notifications to users who liked an item | ⚠️ Not Planned |
+| Auto Purchase Response | Automatic message when a buyer purchases an item | ⚠️ Not Planned |
+| Item Database | Auto re upload for items with multiple copies | ⚠️ Not Planned |
 
 ## Legal Notice
 
 This tool is for personal use only and must comply with Vinted's terms of service. Any automated data collection must respect platform policies and user privacy.
-
-# start the back
-
-fastapi dev main.py
+ 
