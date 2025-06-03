@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from config.settings import ALLOW_ORIGINS, DEBUG_MODE
-from routers import ads_management, auth, follow_mass
+from routers import ads_management, auth, follow_mass, accounting
 from config.models import lifespan
 
 
@@ -12,6 +12,7 @@ app.mount("/api", app)
 app.include_router(ads_management.router)
 app.include_router(auth.router)
 app.include_router(follow_mass.router)
+app.include_router(accounting.router)
 
 
 app.add_middleware(

@@ -113,7 +113,7 @@ async def refresh_ads(
     while True:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
-        response = execute_request("get", url, headers)
+        response = execute_request("GET", url, headers)
 
         if response.status_code != 200:
             break
@@ -193,7 +193,7 @@ async def delete_sold_items(
     while True:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
-        response = execute_request("get", url, headers)
+        response = execute_request("GET", url, headers)
         nb_items_deleted = 0
 
         if response.status_code != 200:
@@ -236,7 +236,7 @@ async def delete_all_ads(
     while True:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
-        response = execute_request("get", url, headers)
+        response = execute_request("GET", url, headers)
         nb_items_deleted = 0
 
         if response.status_code != 200:

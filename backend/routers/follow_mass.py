@@ -64,7 +64,7 @@ async def backup_followed_users(
 def toggle_follow(user_id: int, headers: dict) -> int:
     url = f"{API_URL}followed_users/toggle"
     data = {"user_id": user_id}
-    response = execute_request("post", url, headers, data)
+    response = execute_request("POST", url, headers, data)
     print(
         f"[RESULT] user_id: {user_id} CODE: {response.status_code} | REASON: {response.reason} | text: {response.text}"
     )

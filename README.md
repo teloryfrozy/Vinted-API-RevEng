@@ -43,7 +43,7 @@ fastapi dev main.py
 
 | Feature                | Description                                              | Status               |
 | ---------------------- | -------------------------------------------------------- | -------------------- |
-| Conversation Cleanup   | Auto-delete conversations after x months of inactivity   | ⚒️ Under Refactoring |
+| Conversation Cleanup   | Auto-delete conversations after x months of inactivity   | ✅ Done |
 | Ad Refresh             | Automatic refreshing of listings                         | ⚒️ Under Refactoring |
 | Sales Analytics        | Export transactions, generate graphs & statistics        | 📝 To Be Done        |
 | Annual Reports         | Yearly compatible reporting system                       | 📝 To Be Done        |

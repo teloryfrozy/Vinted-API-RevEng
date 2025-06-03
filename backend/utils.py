@@ -59,19 +59,19 @@ def execute_request(
     i = 0
 
     while i < MAX_RETRIES:
-        if method == "get":
+        if method == "GET":
             response = requests.get(url, headers=headers)
-        elif method == "post":
+        elif method == "POST":
             response = requests.post(url, headers=headers, json=data)
-        elif method == "put":
-            response = requests.put(url, headers=headers, json=data)
-        elif method == "delete":
+        elif method == "PATCH":
+            response = requests.patch(url, headers=headers, json=data)
+        elif method == "DELETE":
             response = requests.delete(url, headers=headers, json=data)
 
         if response.status_code != 200:
             refresh_access_token(headers, session)
 
-            headers = get_vinted_headers()
+            headers = get_vinted_headers(session)
             print(
                 f"Status code: {response.status_code}",
                 f"Reason: {response.reason}",
@@ -89,10 +89,14 @@ def execute_request(
 
 
 def refresh_access_token(headers: dict, session: Session):
-    response = execute_request(
-        "post", f"https://www.vinted.fr/web/api/auth/refresh", headers
+    response = requests.post(
+        f"https://www.vinted.fr/web/api/auth/refresh", headers=headers
     )
-    print("Token vient d'être rafraîchi", response.json()["access_token"][:-5])
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=401,
+            detail="Refresh token refused by Vinted server. Please update your token.",
+        )
     auth = session.exec(select(User).order_by(User.id.desc())).first()
     auth.vinted_access_token = response.json()["access_token"]
     session.add(auth)
