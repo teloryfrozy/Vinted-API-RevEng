@@ -4,8 +4,10 @@ TODO:
 - finish the refresh ads function
 """
 
+import json
 import requests
 import re
+from bs4 import BeautifulSoup
 from time import sleep
 from typing import List
 from fastapi import APIRouter, Depends
@@ -44,37 +46,8 @@ def extract_photos_urls(photos: List[Photo]) -> List[str]:
     return urls
 
 
-def prepare_item_info(item_data: dict) -> dict:
-    """Prepares item info for re-upload"""
-    color_ids = [
-        color_id
-        for color_id in [item_data["color1_id"], item_data["color2_id"]]
-        if color_id is not None
-    ]
-
-    return {
-        "id": None,
-        "currency": item_data["price"]["currency_code"],
-        "title": item_data["title"],
-        "description": item_data["description"],
-        "brand_id": item_data["brand_id"],
-        "brand": item_data["brand"],
-        "size_id": item_data["size_id"],
-        "catalog_id": item_data["catalog_id"],
-        "isbn": item_data["isbn"],
-        "is_unisex": item_data["is_unisex"],
-        "is_for_sell": True,
-        "status_id": item_data["status_id"],
-        "video_game_rating_id": item_data["video_game_rating_id"],
-        "price": item_data["price"]["amount"],
-        "package_size_id": item_data["package_size_id"],
-        "shipment_prices": {"domestic": None, "international": None},
-        "color_ids": color_ids if color_ids else None,
-        "assigned_photos": [],
-        "measurement_length": item_data["measurement_length"],
-        "measurement_width": item_data["measurement_width"],
-        "item_attributes": item_data["item_attributes"],
-    }
+def prepare_item_info(item: dict) -> dict:
+    pass
 
 
 async def upload_photos(urls: List[str], temp_uuid: str, headers: dict) -> List[int]:
@@ -110,73 +83,94 @@ async def refresh_ads(
     same_row = 0
     page = 1
 
-    while True:
+    url = f"{API_URL}wardrobe/4977264403/items?page={page}&per_page=20&order=revelance"
+    response = execute_request("GET", url, headers)
+
+    total_pages = response.json()["pagination"]["total_pages"]
+
+    while page <= total_pages:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
         response = execute_request("GET", url, headers)
 
-        if response.status_code != 200:
-            break
-
         data = response.json()
         items = data["items"]
 
-        if not items:
-            break
-
         for item in items:
-
             if not (
                 item["item_closing_action"] == None
+                and item["is_draft"] == False
                 and item["is_reserved"] == False
                 and item["is_closed"] == False
                 and item["is_hidden"] == False
             ):
                 continue
 
-            continue
+            # Vinted uses SSR for item data so we need to scrap it from HTML
+            path = item["path"]
+            item_url = f"https://www.vinted.fr{path}"
+
+            response = execute_request("GET", item_url, headers)
+
+            result = re.search(
+                r'(\{"itemDto":.*?"electronicsVerification":.*?\}\})\]',
+                response.text.replace('\\"', '"').replace("\\\\n", "\\n"),
+            )
+            if result:
+                item_dto_str = result.group(1)
+
+                try:
+                    item_data = json.loads(item_dto_str)
+                except json.JSONDecodeError as e:
+                    print(f"Error parsing JSON: {e}")
+            else:
+                print("No item data found in the response")
+
+            return {
+                "message": "Item data fetched successfully",
+            }
 
             # Prepare item data
-            item_info = prepare_item_info(item)
-            photo_urls = extract_photos_urls(item["photos"])
+            # item_info = prepare_item_info(item)
+            # photo_urls = extract_photos_urls(item["photos"])
 
-            # Handle rate limiting
-            if same_row == 15:
-                sleep(30)
-                same_row = 0
+            # # Handle rate limiting
+            # if same_row == 15:
+            #     sleep(30)
+            #     same_row = 0
 
-            # Get temp UUID for upload
-            response = requests.get("https://www.vinted.fr/items/new", headers=headers)
-            temp_uuid = (
-                re.search(
-                    r'<div id="ItemUpload-react-component-\s*(.*?)\s*"',
-                    response.text,
-                    re.DOTALL,
-                )
-                .group(1)
-                .strip()
-            )
+            # # Get temp UUID for upload
+            # response = requests.get("https://www.vinted.fr/items/new", headers=headers)
+            # temp_uuid = (
+            #     re.search(
+            #         r'<div id="ItemUpload-react-component-\s*(.*?)\s*"',
+            #         response.text,
+            #         re.DOTALL,
+            #     )
+            #     .group(1)
+            #     .strip()
+            # )
 
-            # Upload photos
-            photo_ids = await upload_photos(photo_urls, temp_uuid, headers)
+            # # Upload photos
+            # photo_ids = await upload_photos(photo_urls, temp_uuid, headers)
 
-            # Prepare final item data
-            item_info["temp_uuid"] = temp_uuid
-            item_info["assigned_photos"] = [
-                {"id": pid, "orientation": 0} for pid in photo_ids
-            ]
+            # # Prepare final item data
+            # item_info["temp_uuid"] = temp_uuid
+            # item_info["assigned_photos"] = [
+            #     {"id": pid, "orientation": 0} for pid in photo_ids
+            # ]
 
             # Upload item
-            response = requests.post(
-                "https://www.vinted.fr/api/v2/items",
-                headers=headers,
-                json={"item": item_info, "feedback_id": None},
-            )
+            # response = requests.post(
+            #     "https://www.vinted.fr/api/v2/items",
+            #     headers=headers,
+            #     json={"item": item_info, "feedback_id": None},
+            # )
 
-            if response.status_code == 200:
-                # Delete old item
-                requests.post(f"{API_URL}items/{item['id']}/delete", headers=headers)
-                same_row += 1
+            # if response.status_code == 200:
+            #     # Delete old item
+            #     requests.post(f"{API_URL}items/{item['id']}/delete", headers=headers)
+            #     same_row += 1
 
         page += 1
 
