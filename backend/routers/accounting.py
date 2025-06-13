@@ -38,7 +38,12 @@ async def clean_conversations(
         )
 
         for conversation in response.json()["conversations"]:
-            if (datetime.datetime.now() - datetime.datetime.strptime(conversation["updated_at"].split("+")[0], "%Y-%m-%dT%H:%M:%S")).days > clean_conversations.monthsToKeep * 30:
+            if (
+                datetime.datetime.now()
+                - datetime.datetime.strptime(
+                    conversation["updated_at"].split("+")[0], "%Y-%m-%dT%H:%M:%S"
+                )
+            ).days > clean_conversations.monthsToKeep * 30:
                 nb_conversations_deleted += 1
                 if not conversation["is_deletion_restricted"]:
                     execute_request(
