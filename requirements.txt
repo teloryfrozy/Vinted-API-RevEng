@@ -1,5 +1,5 @@
 beautifulsoup4
-bs4==0.0.1
+bs4
 certifi==2023.11.17
 chardet==5.2.0
 charset-normalizer==3.3.2
