@@ -11,6 +11,7 @@ MAX_RETRIES = 3
 
 def get_vinted_headers(session: Session = Depends(get_session)) -> dict:
     """Returns headers for Vinted API requests"""
+    session = next(get_session())
     auth = session.exec(select(User).order_by(User.id.desc())).first()
 
     if not auth:
@@ -19,14 +20,14 @@ def get_vinted_headers(session: Session = Depends(get_session)) -> dict:
             detail="No Vinted authentication found. Please login first.",
         )
 
-    if auth.expires_at and auth.expires_at < datetime.datetime.now():
-        refresh_access_token(headers, session)
-        auth = session.exec(select(User).order_by(User.id.desc())).first()
-
     headers = {
         **BASE_HEADERS,
         "Cookie": f"access_token_web={auth.vinted_access_token}; refresh_token_web={auth.vinted_refresh_token}",
     }
+
+    if auth.expires_at and auth.expires_at < datetime.datetime.now():
+        refresh_access_token(headers, session)
+        auth = session.exec(select(User).order_by(User.id.desc())).first()
 
     i = 0
 
@@ -95,8 +96,10 @@ def refresh_access_token(headers: dict, session: Session):
     if response.status_code != 200:
         raise HTTPException(
             status_code=401,
-            detail="Refresh token refused by Vinted server. Please update your token.",
+            detail=f"Refresh token refused by Vinted server. Please update your token. Response: {response.text}",
         )
+    # https://stackoverflow.com/questions/68981634/attributeerror-depends-object-has-no-attribute-query-fastapi
+    session = next(get_session())
     auth = session.exec(select(User).order_by(User.id.desc())).first()
     auth.vinted_access_token = response.json()["access_token"]
     session.add(auth)

@@ -1,9 +1,11 @@
 import re
+import requests
 from fastapi import APIRouter
 from pydantic import BaseModel
 from sqlmodel import Session, select
 from config.models import User, get_session
 from fastapi import APIRouter, Depends
+from utils import get_vinted_headers
 
 router = APIRouter(
     prefix="/auth",
@@ -26,7 +28,9 @@ class Settings(BaseModel):
 
 @router.post("/vinted-token")
 async def save_vinted_token(
-    vinted_token: VintedToken, session: Session = Depends(get_session)
+    vinted_token: VintedToken,
+    session: Session = Depends(get_session),
+    headers: dict = Depends(get_vinted_headers),
 ):
     user = session.exec(select(User).where(User.id == 1)).first()
 
@@ -50,10 +54,19 @@ async def save_vinted_token(
         if vinted_token.vintedRefreshToken:
             user.vinted_refresh_token = vinted_token.vintedRefreshToken
 
+    user_id = get_user_id(headers)
+    if user_id:
+        user.userId = int(user_id)
+
     session.add(user)
     session.commit()
 
     return {"success": True}
+
+
+def get_user_id(headers: dict):
+    response = requests.get("https://www.vinted.fr/api/v2/banners", headers=headers)
+    return response.cookies.get("v_uid")
 
 
 @router.post("/settings")

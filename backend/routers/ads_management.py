@@ -88,6 +88,8 @@ async def refresh_ads(
 
     total_pages = response.json()["pagination"]["total_pages"]
 
+    print("Il y a", total_pages, "pages")
+
     while page <= total_pages:
         user = session.exec(select(User).where(User.id == 1)).first()
         url = f"{API_URL}wardrobe/{user.userId}/items?page={page}&per_page=20&order=revelance"
