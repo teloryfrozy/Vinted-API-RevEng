@@ -45,7 +45,7 @@ fastapi dev main.py
 | ---------------------- | -------------------------------------------------------- | -------------------- |
 | Conversation Cleanup   | Auto-delete conversations after x months of inactivity   | ✅ Done |
 | Ad Refresh             | Automatic refreshing of listings                         | ⚒️ Under Refactoring |
-| Sales Analytics        | Export transactions, generate graphs & statistics        | 📝 To Be Done        |
+| Sales Analytics        | Export transactions, generate graphs & statistics        | ✅ Done |
 | Annual Reports         | Yearly compatible reporting system                       | 📝 To Be Done        |
 | Favorite Messages      | Quick-copy system for 5 favorite messages                | 📝 To Be Done        |
 | Publication Menu       | Database-linked posting system with search functionality | 📝 To Be Done        |

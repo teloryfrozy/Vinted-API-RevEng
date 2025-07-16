@@ -102,5 +102,6 @@ def refresh_access_token(headers: dict, session: Session):
     session = next(get_session())
     auth = session.exec(select(User).order_by(User.id.desc())).first()
     auth.vinted_access_token = response.json()["access_token"]
+    auth.vinted_refresh_token = response.json()["refresh_token"]
     session.add(auth)
     session.commit()

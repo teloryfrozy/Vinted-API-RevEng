@@ -1,12 +1,10 @@
 import datetime
-import re
-from fastapi import HTTPException, APIRouter, Depends
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlmodel import Session, select
+from sqlmodel import Session
 from constants import API_URL
 from utils import execute_request, get_vinted_headers
-from config.models import User, get_session
-from fastapi import APIRouter, Depends
+from config.models import get_session
 
 router = APIRouter(
     prefix="/accounting",
@@ -21,38 +19,194 @@ class ExportSalesData(BaseModel):
     period: str
 
 
+def get_transactions_data(year, month, headers):
+    page = 1
+    url = f"{API_URL}wallet/invoices/{year}/{month}?page={page}"
+    response = execute_request("GET", url, headers)
+
+    data = response.json()
+    total_records = data["invoice_lines_pagination"]["total_records"]
+    total_pages = data["invoice_lines_pagination"]["total_pages"]
+
+    if total_records == 0:
+        return {
+            "bought_data": [],
+            "sold_data": [],
+        }
+
+    bought_data = []
+    sold_data = []
+
+    while page <= total_pages:
+        url = f"{API_URL}wallet/invoices/{year}/{month}?page={page}"
+        response = execute_request("GET", url, headers)
+        data = response.json()
+
+        for line in data["invoice_lines"]:
+            amount = float(line["amount"]["amount"])
+            if line.get("entity_type") == "payout":
+                continue
+            if line["type"] == "debit":
+                sold_data.append(amount)
+            else:
+                bought_data.append(amount)
+
+        page += 1
+
+    return {
+        "bought_data": bought_data,
+        "sold_data": sold_data,
+    }
+
+
+def get_labels(start_year, start_month, headers):
+    url = f"{API_URL}wallet/invoices/current"
+    response = execute_request("GET", url, headers)
+    data = response.json()
+    history = data["history"]
+
+    labels = [
+        f"{item['title']} {str(item['year'])[-2:]}"
+        for item in history
+        if (item["year"] > start_year)
+        or (item["year"] == start_year and item["month"] >= start_month)
+    ]
+
+    labels.reverse()
+    return labels
+
+
+def get_join_date(headers):
+    url = f"{API_URL}wallet/invoices/current"
+    response = execute_request("GET", url, headers)
+    data = response.json()
+    history = data["history"]
+    return {
+        "year": history[-1]["year"],
+        "month": history[-1]["month"],
+        "title": history[-1]["title"],
+    }
+
+
+def get_months_to_fetch(period, headers):
+    """Generate list of (year, month) tuples based on period"""
+    now = datetime.datetime.now()
+    current_year = now.year
+    current_month = now.month
+
+    months_to_fetch = []
+
+    if period == "sinceBegin":
+        join_date = get_join_date(headers)
+        start_year = join_date["year"]
+        start_month = join_date["month"]
+    elif period == "ytd":
+        start_year = current_year
+        start_month = 1
+    elif period == "last1M":
+        if current_month == 1:
+            start_year = current_year - 1
+            start_month = 12
+        else:
+            start_year = current_year
+            start_month = current_month - 1
+    elif period == "last3M":
+        for i in range(3, 0, -1):
+            if current_month - i <= 0:
+                year = current_year - 1
+                month = 12 + (current_month - i)
+            else:
+                year = current_year
+                month = current_month - i
+            months_to_fetch.append((year, month))
+        return months_to_fetch
+    elif period == "last6M":
+        for i in range(6, 0, -1):
+            if current_month - i <= 0:
+                year = current_year - 1
+                month = 12 + (current_month - i)
+            else:
+                year = current_year
+                month = current_month - i
+            months_to_fetch.append((year, month))
+        return months_to_fetch
+    elif period == "last1Y":
+        for i in range(12, 0, -1):
+            if current_month - i <= 0:
+                year = current_year - 1
+                month = 12 + (current_month - i)
+            else:
+                year = current_year
+                month = current_month - i
+            months_to_fetch.append((year, month))
+        return months_to_fetch
+    else:
+        return [(current_year, current_month)]
+
+    # Generate months from start to current
+    year = start_year
+    month = start_month
+
+    while (year < current_year) or (year == current_year and month <= current_month):
+        months_to_fetch.append((year, month))
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+
+    return months_to_fetch
+
+
 @router.post("/export-sales-data")
 def export_sales_data(
     export_sales_data: ExportSalesData,
-    session: Session = Depends(get_session),
+    headers: dict = Depends(get_vinted_headers),
 ):
-    # todo: implement api call to get real data
+    # Get months to fetch based on period
+    months_to_fetch = get_months_to_fetch(export_sales_data.period, headers)
 
-    articles_bought_prices_data = [
-        [12.50, 8.90, 15.00, 22.30, 5.50],
-        [18.75, 11.20, 25.80, 9.90, 14.60, 33.40],
-        [7.30, 19.95, 16.75, 12.10, 28.50],
-        [21.40, 13.85, 9.60, 17.20, 11.95, 24.90, 8.75],
-        [15.60, 20.30, 12.40, 18.90, 26.75, 14.50],
-        [19.80, 8.40, 23.70, 16.30, 10.95, 29.60],
-        [13.20, 17.95, 11.80, 22.40, 15.90, 25.30, 120.33],
-    ]
+    articles_bought_prices_data = []
+    articles_sold_prices_data = []
 
-    articles_sold_prices_data = [
-        [18.90, 14.50, 23.00, 31.50, 12.90],
-        [27.40, 19.80, 38.50, 16.75, 22.90, 45.60],
-        [13.70, 29.50, 24.90, 19.40, 42.80],
-        [32.10, 21.75, 16.20, 26.90, 19.95, 37.50, 15.40],
-        [24.80, 31.90, 19.60, 28.50, 39.75, 23.30],
-        [29.70, 15.90, 36.40, 25.80, 18.95, 44.20],
-        [21.60, 27.50, 19.30, 34.80, 24.90, 38.90, 17.80],
-    ]
+    for year, month in months_to_fetch:
+        data = get_transactions_data(year, month, headers)
+        articles_bought_prices_data.append(data["bought_data"])
+        articles_sold_prices_data.append(data["sold_data"])
+
     total_articles_bought = sum(
         len(articles_bought) for articles_bought in articles_bought_prices_data
     )
     total_articles_sold = sum(
         len(articles_sold) for articles_sold in articles_sold_prices_data
     )
+
+    # Handle empty data cases
+    if not articles_bought_prices_data or not articles_sold_prices_data:
+        return {
+            "labels": [],
+            "turnover_data": [],
+            "gross_profit_data": [],
+            "total_turnover": 0,
+            "maximum_turnover": 0,
+            "minimum_turnover": 0,
+            "average_turnover": 0,
+            "total_gross_profit": 0,
+            "maximum_gross_profit": 0,
+            "minimum_gross_profit": 0,
+            "average_gross_profit": 0,
+            "articles_bought_prices_data": articles_bought_prices_data,
+            "total_articles_bought": total_articles_bought,
+            "average_article_bought_price": 0,
+            "average_nb_articles_bought": 0,
+            "most_expensive_article_bought": 0,
+            "least_expensive_article_bought": 0,
+            "articles_sold_prices_data": articles_sold_prices_data,
+            "total_articles_sold": total_articles_sold,
+            "average_article_sold_price": 0,
+            "average_nb_article_sold": 0,
+            "most_expensive_article_sold": 0,
+            "least_expensive_article_sold": 0,
+        }
 
     turnover_data = [sum(articles_sold) for articles_sold in articles_sold_prices_data]
     gross_profit_data = [
@@ -61,41 +215,52 @@ def export_sales_data(
             articles_bought_prices_data, articles_sold_prices_data
         )
     ]
-    labels = [
-        "Jan 24",
-        "Fév 24",
-        "Mar 24",
-        "Avr 24",
-        "Mai 24",
-        "Jun 24",
-        "Jul 24",
-    ]
 
     data = {
-        "labels": labels,
+        "labels": get_labels(months_to_fetch[0][0], months_to_fetch[0][1], headers),
         "turnover_data": turnover_data,
         "gross_profit_data": gross_profit_data,
         "total_turnover": sum(turnover_data),
-        "maximum_turnover": max(turnover_data),
-        "minimum_turnover": min(turnover_data),
-        "average_turnover": sum(turnover_data) / len(turnover_data),
+        "maximum_turnover": max(turnover_data) if turnover_data else 0,
+        "minimum_turnover": min(turnover_data) if turnover_data else 0,
+        "average_turnover": (
+            sum(turnover_data) / len(turnover_data) if turnover_data else 0
+        ),
         "total_gross_profit": sum(gross_profit_data),
-        "maximum_gross_profit": max(gross_profit_data),
-        "minimum_gross_profit": min(gross_profit_data),
-        "average_gross_profit": sum(gross_profit_data) / len(gross_profit_data),
+        "maximum_gross_profit": max(gross_profit_data) if gross_profit_data else 0,
+        "minimum_gross_profit": min(gross_profit_data) if gross_profit_data else 0,
+        "average_gross_profit": (
+            sum(gross_profit_data) / len(gross_profit_data) if gross_profit_data else 0
+        ),
         "articles_bought_prices_data": articles_bought_prices_data,
         "total_articles_bought": total_articles_bought,
-        "average_article_bought_price": sum(
-            sum(articles_bought) for articles_bought in articles_bought_prices_data
-        )
-        / total_articles_bought,
+        "average_article_bought_price": abs(
+            sum(sum(articles_bought) for articles_bought in articles_bought_prices_data)
+            / total_articles_bought
+        ),
         "average_nb_articles_bought": total_articles_bought
         / len(articles_bought_prices_data),
-        "most_expensive_article_bought": max(
-            max(articles_bought) for articles_bought in articles_bought_prices_data
+        "most_expensive_article_bought": (
+            abs(
+                max(
+                    max(articles_bought)
+                    for articles_bought in articles_bought_prices_data
+                    if articles_bought
+                )
+            )
+            if articles_bought_prices_data
+            else 0
         ),
-        "least_expensive_article_bought": min(
-            min(articles_bought) for articles_bought in articles_bought_prices_data
+        "least_expensive_article_bought": (
+            abs(
+                min(
+                    min(articles_bought)
+                    for articles_bought in articles_bought_prices_data
+                    if articles_bought
+                )
+            )
+            if articles_bought_prices_data
+            else 0
         ),
         "articles_sold_prices_data": articles_sold_prices_data,
         "total_articles_sold": sum(
@@ -105,12 +270,28 @@ def export_sales_data(
             sum(articles_sold) for articles_sold in articles_sold_prices_data
         )
         / total_articles_sold,
-        "average_nb_article_sold": total_articles_sold / len(articles_sold_prices_data),
-        "most_expensive_article_sold": max(
-            max(articles_sold) for articles_sold in articles_sold_prices_data
+        "average_nb_article_sold": (
+            total_articles_sold / len(articles_sold_prices_data)
+            if articles_sold_prices_data
+            else 0
         ),
-        "least_expensive_article_sold": min(
-            min(articles_sold) for articles_sold in articles_sold_prices_data
+        "most_expensive_article_sold": (
+            max(
+                max(articles_sold)
+                for articles_sold in articles_sold_prices_data
+                if articles_sold
+            )
+            if articles_sold_prices_data
+            else 0
+        ),
+        "least_expensive_article_sold": (
+            min(
+                min(articles_sold)
+                for articles_sold in articles_sold_prices_data
+                if articles_sold
+            )
+            if articles_sold_prices_data
+            else 0
         ),
     }
 

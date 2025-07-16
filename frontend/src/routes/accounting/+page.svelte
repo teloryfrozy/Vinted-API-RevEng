@@ -107,18 +107,18 @@
                     labels: [],
                     datasets: [
                         {
-                            label: "Chiffre d'affaires (€)",
-                            data: [],
-                            borderColor: "#059669",
-                            backgroundColor: "#10b981",
-                            order: 1,
-                        },
-                        {
                             label: "Bénéfice brut (€)",
                             borderColor: "#2563eb",
                             data: [],
                             backgroundColor: "#3b82f6",
                             order: 0,
+                        },
+                        {
+                            label: "Chiffre d'affaires (€)",
+                            data: [],
+                            borderColor: "#059669",
+                            backgroundColor: "#10b981",
+                            order: 1,
                         },
                     ],
                 },
