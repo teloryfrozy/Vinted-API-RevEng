@@ -2,6 +2,7 @@
     import { Users, AlertCircle, TreePine, FileText, Link2, UserPlus, History, Save } from "@lucide/svelte";
     import { fetchData } from "../../global/fetchData";
     import Notification from "../../global/components/NotificationCard.svelte";
+    import { _ } from 'svelte-i18n';
 
     let showAlert = true;
     let isFollowing = false;
@@ -22,7 +23,7 @@
             type = "error";
         } else {
             showNotif = true;
-            message = "Abonnements sauvegardés avec succès";
+            message = $_('followMassPage.messages.backupSuccess');
             type = "success";
         }
     }
@@ -39,7 +40,7 @@
             type = "error";
         } else {
             showNotif = true;
-            message = "Utilisateurs suivis avec succès";
+            message = $_('followMassPage.messages.followSuccess');
             type = "success";
         }
     }
@@ -47,7 +48,7 @@
     async function scrapVintedUser() {
         if (!vintieUrl) {
             showNotif = true;
-            message = "URL Vinted manquante";
+            message = $_('followMassPage.messages.missingUrl');
             type = "error";
             return;
         }
@@ -66,7 +67,7 @@
                 type = "error";
             } else {
                 showNotif = true;
-                message = "Utilisateurs suivis avec succès";
+                message = $_('followMassPage.messages.followSuccess');
                 type = "success";
             }
             isFollowing = false;
@@ -81,7 +82,7 @@
             type = "error";
         } else {
             showNotif = true;
-            message = `Abonnements récupérés avec succès, ${result.data.nbUsersRecovered} utilisateurs ont été suivis`;
+            message = $_('followMassPage.messages.recoverSuccess').replace('{count}', result.data.nbUsersRecovered);
             type = "success";
         }
     }
@@ -91,7 +92,7 @@
     <Notification bind:visible={showNotif} {message} {type} />
 {/if}
 <div class="mx-auto max-w-7xl px-4 py-8">
-    <h1 class="mb-8 text-3xl font-bold text-gray-900">Suivi en Masse</h1>
+    <h1 class="mb-8 text-3xl font-bold text-gray-900">{$_('followMassPage.title')}</h1>
 
     {#if showAlert}
         <div class="mb-6 rounded-md bg-yellow-50 p-4">
@@ -100,14 +101,14 @@
                     <AlertCircle class="h-5 w-5 text-yellow-400" />
                 </div>
                 <div class="ml-3">
-                    <h3 class="text-sm font-medium text-yellow-800">Configuration requise</h3>
+                    <h3 class="text-sm font-medium text-yellow-800">{$_('followMassPage.alert.title')}</h3>
                     <div class="mt-2 text-sm text-yellow-700">
                         <p>
-                            Cette fonctionnalité nécessite votre token Vinted. Configurez-le dans les <a
+                            {$_('followMassPage.alert.description')} <a
                                 href="/settings"
                                 class="font-medium text-yellow-800 underline hover:text-yellow-900"
                             >
-                                paramètres
+                                {$_('followMassPage.alert.settings')}
                             </a>
                             .
                         </p>
@@ -118,7 +119,7 @@
                     on:click={() => (showAlert = false)}
                     class="ml-auto -mx-1.5 -my-1.5 rounded-md bg-yellow-50 p-1.5 text-yellow-500 hover:bg-yellow-100"
                 >
-                    <span class="sr-only">Dismiss</span>
+                    <span class="sr-only">{$_('followMassPage.alert.dismiss')}</span>
                     <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -133,23 +134,23 @@
         <div class="rounded-lg bg-white p-6 shadow">
             <div class="flex items-center space-x-2">
                 <Save class="h-6 w-6 text-green-600" />
-                <h2 class="text-lg font-medium text-gray-900">Gestion des abonnements</h2>
+                <h2 class="text-lg font-medium text-gray-900">{$_('followMassPage.subscriptionManagement.title')}</h2>
             </div>
-            <p class="mt-2 text-sm text-gray-600">Sauvegardez ou restaurez vos abonnements Vinted</p>
+            <p class="mt-2 text-sm text-gray-600">{$_('followMassPage.subscriptionManagement.description')}</p>
             <div class="mt-4 flex gap-4">
                 <button
                     on:click={backupFollowings}
                     class="flex flex-1 items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                 >
                     <Save class="h-5 w-5" />
-                    Sauvegarder
+                    {$_('followMassPage.subscriptionManagement.backup')}
                 </button>
                 <button
                     on:click={recoverFollowedUsers}
                     class="flex flex-1 items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
                 >
                     <History class="h-5 w-5" />
-                    Restaurer
+                    {$_('followMassPage.subscriptionManagement.restore')}
                 </button>
             </div>
         </div>
@@ -160,9 +161,9 @@
             <div class="mb-4">
                 <div class="flex items-center text-lg font-medium text-gray-900">
                     <UserPlus class="mr-2 h-6 w-6 text-blue-600" />
-                    <h2>Suivi en Masse</h2>
+                    <h2>{$_('followMassPage.massFollow.title')}</h2>
                 </div>
-                <p class="mt-2 text-sm text-gray-600">Suivez automatiquement des utilisateurs selon le mode choisi.</p>
+                <p class="mt-2 text-sm text-gray-600">{$_('followMassPage.massFollow.description')}</p>
             </div>
 
             <div class="space-y-4">
@@ -170,20 +171,20 @@
                     <label class="flex items-center space-x-2">
                         <input type="radio" bind:group={followMode} value="tree" class="text-blue-600" />
                         <TreePine class="h-4 w-4" />
-                        <span>Mode Arborescence</span>
+                        <span>{$_('followMassPage.massFollow.treeMode.label')}</span>
                     </label>
-                    <p class="text-sm text-gray-600">Regarde vos abonnements et les abonnements de vos abonnements</p>
+                    <p class="text-sm text-gray-600">{$_('followMassPage.massFollow.treeMode.description')}</p>
                     <label class="flex items-center space-x-2">
                         <input type="radio" bind:group={followMode} value="reviews" class="text-blue-600" />
                         <FileText class="h-4 w-4" />
-                        <span>Mode Avis</span>
+                        <span>{$_('followMassPage.massFollow.reviewsMode.label')}</span>
                     </label>
-                    <p class="text-sm text-gray-600">Suit les utilisateurs qui ont laissé des avis sur vos articles</p>
+                    <p class="text-sm text-gray-600">{$_('followMassPage.massFollow.reviewsMode.description')}</p>
                 </div>
 
                 {#if followMode === "tree"}
                     <div>
-                        <p class="block text-sm font-medium text-gray-700">Nombre d'utilisateurs</p>
+                        <p class="block text-sm font-medium text-gray-700">{$_('followMassPage.massFollow.userCount')}</p>
                         <input
                             type="number"
                             bind:value={targetCount}
@@ -199,7 +200,7 @@
                     on:click={startFollowing}
                     class="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
-                    Suivre
+                    {$_('followMassPage.massFollow.followButton')}
                 </button>
             </div>
         </div>
@@ -231,17 +232,17 @@
                 <div class="mb-4">
                     <div class="flex items-center text-lg font-medium text-gray-900">
                         <Link2 class="mr-2 h-6 w-6 text-orange-600" />
-                        <h2>Récupération par URL</h2>
+                        <h2>{$_('followMassPage.urlRecovery.title')}</h2>
                     </div>
                 </div>
 
                 <div class="space-y-4">
                     <div>
-                        <p class="block text-sm font-medium text-gray-700">URL Vinted</p>
+                        <p class="block text-sm font-medium text-gray-700">{$_('followMassPage.urlRecovery.urlLabel')}</p>
                         <input
                             type="text"
                             bind:value={vintieUrl}
-                            placeholder="https://www.vinted.fr/member/..."
+                            placeholder={$_('followMassPage.urlRecovery.urlPlaceholder')}
                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500"
                         />
                     </div>
@@ -250,12 +251,12 @@
                         <label class="flex items-center space-x-2">
                             <input type="radio" bind:group={scrapeMode} value="followers" class="text-orange-600" />
                             <Users class="h-4 w-4" />
-                            <span>Abonnés</span>
+                            <span>{$_('followMassPage.urlRecovery.followers')}</span>
                         </label>
                         <label class="flex items-center space-x-2">
                             <input type="radio" bind:group={scrapeMode} value="followings" class="text-orange-600" />
                             <Users class="h-4 w-4" />
-                            <span>Abonnements</span>
+                            <span>{$_('followMassPage.urlRecovery.followings')}</span>
                         </label>
                     </div>
 
@@ -263,7 +264,7 @@
                         on:click={scrapVintedUser}
                         class="w-full rounded-md bg-orange-600 px-4 py-2 text-white hover:bg-orange-700"
                     >
-                        Récupérer
+                        {$_('followMassPage.urlRecovery.recoverButton')}
                     </button>
                 </div>
             </div>

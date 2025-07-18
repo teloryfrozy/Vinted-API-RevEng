@@ -4,6 +4,7 @@
     import Notification from "../../global/components/NotificationCard.svelte";
     import { onMount } from "svelte";
     import Chart from "chart.js/auto";
+    import { _ } from 'svelte-i18n';
 
     interface FavoriteMessage {
         id: number | null;
@@ -48,7 +49,7 @@
     async function addFavoriteMessage() {
         if (!newMessageName.trim() || !newMessageContent.trim()) {
             showNotif = true;
-            message = "Veuillez remplir tous les champs";
+            message = $_('accountingPage.messages.fillFields');
             type = "error";
             return;
         }
@@ -60,7 +61,7 @@
 
         if (result.success) {
             showNotif = true;
-            message = "Message ajouté avec succès";
+            message = $_('accountingPage.messages.messageAdded');
             type = "success";
             newMessageName = "";
             newMessageContent = "";
@@ -79,7 +80,7 @@
 
         if (result.success) {
             showNotif = true;
-            message = "Message supprimé avec succès";
+            message = $_('accountingPage.messages.messageDeleted');
             type = "success";
             await loadFavoriteMessages();
         } else {
@@ -92,14 +93,14 @@
     async function updateFavoriteMessage() {
         if (!editMessageName.trim() || !editMessageContent.trim()) {
             showNotif = true;
-            message = "Veuillez remplir tous les champs";
+            message = $_('accountingPage.messages.fillFields');
             type = "error";
             return;
         }
 
         if (!editingMessage || !editingMessage.id) {
             showNotif = true;
-            message = "Aucun message en cours d'édition";
+            message = $_('accountingPage.messages.noEditingMessage');
             type = "error";
             return;
         }
@@ -112,7 +113,7 @@
 
         if (result.success) {
             showNotif = true;
-            message = "Message modifié avec succès";
+            message = $_('accountingPage.messages.messageUpdated');
             type = "success";
             editingMessage = null;
             await loadFavoriteMessages();
@@ -138,7 +139,7 @@
     function copyToClipboard(text: string) {
         navigator.clipboard.writeText(text);
         showNotif = true;
-        message = "Message copié dans le presse-papiers";
+        message = $_('accountingPage.messages.messageCopied');
         type = "success";
     }
 
@@ -152,7 +153,7 @@
             type = "error";
         } else {
             showNotif = true;
-            message = "Conversations nettoyées avec succès";
+            message = $_('accountingPage.messages.conversationsCleaned');
             type = "success";
         }
     }
@@ -172,7 +173,7 @@
             return;
         }
         showNotif = true;
-        message = "Données de vente exportées";
+        message = $_('accountingPage.messages.salesDataExported');
         type = "success";
 
         totalTurnover = result.data.total_turnover;
@@ -236,14 +237,14 @@
                     labels: [],
                     datasets: [
                         {
-                            label: "Bénéfice brut (€)",
+                            label: $_('accountingPage.sales.chart.grossProfit'),
                             borderColor: "#2563eb",
                             data: [],
                             backgroundColor: "#3b82f6",
                             order: 0,
                         },
                         {
-                            label: "Chiffre d'affaires (€)",
+                            label: $_('accountingPage.sales.chart.turnover'),
                             data: [],
                             borderColor: "#059669",
                             backgroundColor: "#10b981",
@@ -259,7 +260,7 @@
                         },
                         title: {
                             display: true,
-                            text: "Chiffre d'affaires et bénéfice brut dans le temps",
+                            text: $_('accountingPage.sales.chart.title'),
                             font: {
                                 size: 20,
                             },
@@ -282,7 +283,7 @@
 
 <div class="mx-auto max-w-7xl px-4 py-8">
     <div class="mb-8 flex items-center justify-between">
-        <h1 class="text-3xl font-bold text-gray-900">Secrétariat</h1>
+        <h1 class="text-3xl font-bold text-gray-900">{$_('accountingPage.title')}</h1>
     </div>
 
     <div class="mb-8 flex border-b">
@@ -292,7 +293,7 @@
                 : 'border-transparent text-gray-500 hover:text-gray-700'}"
             on:click={() => (activeTab = "favorites")}
         >
-            Messages favoris
+            {$_('accountingPage.tabs.favorites')}
         </button>
         <button
             class="mr-4 border-b-2 px-4 py-2 {activeTab === 'sales'
@@ -300,7 +301,7 @@
                 : 'border-transparent text-gray-500 hover:text-gray-700'}"
             on:click={() => (activeTab = "sales")}
         >
-            Données de Vente
+            {$_('accountingPage.tabs.sales')}
         </button>
         <button
             class="border-b-2 px-4 py-2 {activeTab === 'management'
@@ -312,7 +313,7 @@
                 chart?.destroy();
             }}
         >
-            Gestion
+            {$_('accountingPage.tabs.management')}
         </button>
     </div>
 
@@ -322,26 +323,26 @@
                 <div class="mb-4">
                     <div class="flex items-center text-lg font-medium text-gray-900">
                         <MessageSquare class="mr-2 h-6 w-6 text-purple-600" />
-                        <h2>Messages favoris</h2>
+                        <h2>{$_('accountingPage.favorites.title')}</h2>
                     </div>
                 </div>
 
                 <div class="mb-6 space-y-4">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-                            <p class="block text-sm font-medium text-gray-700 mb-2">Nom du message</p>
+                            <p class="block text-sm font-medium text-gray-700 mb-2">{$_('accountingPage.favorites.addMessage.nameLabel')}</p>
                             <input
                                 type="text"
                                 bind:value={newMessageName}
-                                placeholder="Ex: Remerciement standard"
+                                placeholder={$_('accountingPage.favorites.addMessage.namePlaceholder')}
                                 class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                             />
                         </div>
                         <div>
-                            <p class="block text-sm font-medium text-gray-700 mb-2">Contenu du message</p>
+                            <p class="block text-sm font-medium text-gray-700 mb-2">{$_('accountingPage.favorites.addMessage.contentLabel')}</p>
                             <textarea
                                 bind:value={newMessageContent}
-                                placeholder="Ex: Merci pour votre achat !"
+                                placeholder={$_('accountingPage.favorites.addMessage.contentPlaceholder')}
                                 class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                             ></textarea>
                         </div>
@@ -351,7 +352,7 @@
                         class="inline-flex items-center justify-center space-x-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                     >
                         <Plus class="h-4 w-4" />
-                        <span>Ajouter un message</span>
+                        <span>{$_('accountingPage.favorites.addMessage.button')}</span>
                     </button>
                 </div>
 
@@ -359,8 +360,8 @@
                     {#if favoriteMessages.length === 0}
                         <div class="text-center py-8 text-gray-500">
                             <MessageSquare class="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                            <p>Aucun message favori pour le moment</p>
-                            <p class="text-sm">Ajoutez votre premier message ci-dessus</p>
+                            <p>{$_('accountingPage.favorites.emptyState.title')}</p>
+                            <p class="text-sm">{$_('accountingPage.favorites.emptyState.subtitle')}</p>
                         </div>
                     {:else}
                         {#each favoriteMessages as message}
@@ -369,7 +370,7 @@
                                     <div class="space-y-4">
                                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                             <div>
-                                                <p class="block text-sm font-medium text-gray-700 mb-2">Nom</p>
+                                                <p class="block text-sm font-medium text-gray-700 mb-2">{$_('accountingPage.favorites.edit.nameLabel')}</p>
                                                 <input
                                                     type="text"
                                                     bind:value={editMessageName}
@@ -377,7 +378,7 @@
                                                 />
                                             </div>
                                             <div>
-                                                <p class="block text-sm font-medium text-gray-700 mb-2">Contenu</p>
+                                                <p class="block text-sm font-medium text-gray-700 mb-2">{$_('accountingPage.favorites.edit.contentLabel')}</p>
                                                 <input
                                                     type="text"
                                                     bind:value={editMessageContent}
@@ -390,13 +391,13 @@
                                                 on:click={updateFavoriteMessage}
                                                 class="inline-flex items-center justify-center space-x-2 rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                                             >
-                                                Sauvegarder
+                                                {$_('accountingPage.favorites.edit.saveButton')}
                                             </button>
                                             <button
                                                 on:click={cancelEdit}
                                                 class="inline-flex items-center justify-center space-x-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                             >
-                                                Annuler
+                                                {$_('accountingPage.favorites.edit.cancelButton')}
                                             </button>
                                         </div>
                                     </div>
@@ -410,21 +411,21 @@
                                             <button
                                                 on:click={() => copyToClipboard(message.message)}
                                                 class="inline-flex items-center justify-center space-x-1 rounded-md border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                                                title="Copier le message"
+                                                title={$_('accountingPage.favorites.actions.copy')}
                                             >
                                                 <Copy class="h-4 w-4" />
                                             </button>
                                             <button
                                                 on:click={() => startEdit(message)}
                                                 class="inline-flex items-center justify-center space-x-1 rounded-md border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                                                title="Modifier"
+                                                title={$_('accountingPage.favorites.actions.edit')}
                                             >
                                                 <Edit class="h-3 w-3" />
                                             </button>
                                             <button
                                                 on:click={() => message.id && deleteFavoriteMessage(message.id)}
                                                 class="inline-flex items-center justify-center space-x-1 rounded-md border border-red-300 px-2 py-1 text-xs font-medium text-red-700 transition-colors hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                                                title="Supprimer"
+                                                title={$_('accountingPage.favorites.actions.delete')}
                                             >
                                                 <Trash2 class="h-3 w-3" />
                                             </button>
@@ -443,14 +444,14 @@
                 <div class="mb-4">
                     <div class="flex items-center text-lg font-medium text-gray-900">
                         <MessageSquare class="mr-2 h-6 w-6 text-purple-600" />
-                        <h2>Données de Vente</h2>
+                        <h2>{$_('accountingPage.sales.title')}</h2>
                     </div>
                     <div class="mt-2">
                         <div
                             class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
                         >
                             <Settings2 class="mr-1 h-3 w-3" />
-                            Token Vinted requis
+                            {$_('accountingPage.sales.tokenRequired')}
                         </div>
                     </div>
                 </div>
@@ -458,18 +459,18 @@
                 <div class="space-y-4">
                     <div>
                         <div class="flex items-center gap-4">
-                            <p class="mb-2 text-sm font-medium text-gray-700 whitespace-nowrap">Période d'analyse</p>
+                            <p class="mb-2 text-sm font-medium text-gray-700 whitespace-nowrap">{$_('accountingPage.sales.periodLabel')}</p>
                             <select
                                 on:change={handlePeriodChange}
                                 value={selectedPeriod}
                                 class="px-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0E49B5] focus:border-transparent"
                             >
-                                <option value="last1M">Dernier mois</option>
-                                <option value="last3M">3 derniers mois</option>
-                                <option value="last6M">6 derniers mois</option>
-                                <option value="ytd">Année en cours</option>
-                                <option value="last1Y">Dernière année</option>
-                                <option value="sinceBegin">Depuis le début</option>
+                                <option value="last1M">{$_('accountingPage.sales.periods.last1M')}</option>
+                                <option value="last3M">{$_('accountingPage.sales.periods.last3M')}</option>
+                                <option value="last6M">{$_('accountingPage.sales.periods.last6M')}</option>
+                                <option value="ytd">{$_('accountingPage.sales.periods.ytd')}</option>
+                                <option value="last1Y">{$_('accountingPage.sales.periods.last1Y')}</option>
+                                <option value="sinceBegin">{$_('accountingPage.sales.periods.sinceBegin')}</option>
                             </select>
                         </div>
                     </div>
@@ -479,7 +480,7 @@
                             on:click={exportSalesData}
                             class="inline-flex items-center justify-center space-x-2 rounded-md border border-blue-600 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
-                            Exporter les données
+                            {$_('accountingPage.sales.exportButton')}
                         </button>
                     </div>
                 </div>
@@ -494,96 +495,96 @@
             {#if showSalesGraph}
                 <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div class="rounded-lg bg-white p-4 shadow border-l-4 border-green-500">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Chiffre d'affaires</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">{$_('accountingPage.sales.stats.turnover.title')}</h3>
                         <div class="space-y-2 text-sm">
                             <p>
-                                <span class="font-medium">Total :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.turnover.total')} :</span>
                                 {totalTurnover.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Maximum :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.turnover.maximum')} :</span>
                                 {maximumTurnover.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Minimum :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.turnover.minimum')} :</span>
                                 {minimumTurnover.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Moyenne :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.turnover.average')} :</span>
                                 {averageTurnover.toFixed(2)} €
                             </p>
                         </div>
                     </div>
 
                     <div class="rounded-lg bg-white p-4 shadow border-l-4 border-blue-500">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Bénéfice brut</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">{$_('accountingPage.sales.stats.grossProfit.title')}</h3>
                         <div class="space-y-2 text-sm">
                             <p>
-                                <span class="font-medium">Total :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.grossProfit.total')} :</span>
                                 {totalGrossProfit.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Maximum :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.grossProfit.maximum')} :</span>
                                 {maximumGrossProfit.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Minimum :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.grossProfit.minimum')} :</span>
                                 {minimumGrossProfit.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Moyenne :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.grossProfit.average')} :</span>
                                 {averageGrossProfit.toFixed(2)} €
                             </p>
                         </div>
                     </div>
 
                     <div class="rounded-lg bg-white p-4 shadow border-l-4 border-orange-500">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Articles achetés</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">{$_('accountingPage.sales.stats.bought.title')}</h3>
                         <div class="space-y-2 text-sm">
                             <p>
-                                <span class="font-medium">Total :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.bought.total')} :</span>
                                 {totalArticlesBought}
                             </p>
                             <p>
-                                <span class="font-medium">Prix moyen :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.bought.averagePrice')} :</span>
                                 {averageArticleBoughtPrice.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Nombre moyen :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.bought.averageCount')} :</span>
                                 {averageNbArticlesBought.toFixed(1)}
                             </p>
                             <p>
-                                <span class="font-medium">Plus cher :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.bought.mostExpensive')} :</span>
                                 {mostExpensiveArticleBought.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Moins cher :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.bought.leastExpensive')} :</span>
                                 {leastExpensiveArticleBought.toFixed(2)} €
                             </p>
                         </div>
                     </div>
 
                     <div class="rounded-lg bg-white p-4 shadow border-l-4 border-purple-500">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Articles vendus</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">{$_('accountingPage.sales.stats.sold.title')}</h3>
                         <div class="space-y-2 text-sm">
                             <p>
-                                <span class="font-medium">Total :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.sold.total')} :</span>
                                 {totalArticlesSold.toFixed(0)}
                             </p>
                             <p>
-                                <span class="font-medium">Prix moyen :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.sold.averagePrice')} :</span>
                                 {averageArticleSoldPrice.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Nombre moyen :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.sold.averageCount')} :</span>
                                 {averageNbArticlesSold.toFixed(1)}
                             </p>
                             <p>
-                                <span class="font-medium">Plus cher :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.sold.mostExpensive')} :</span>
                                 {mostExpensiveArticleSold.toFixed(2)} €
                             </p>
                             <p>
-                                <span class="font-medium">Moins cher :</span>
+                                <span class="font-medium">{$_('accountingPage.sales.stats.sold.leastExpensive')} :</span>
                                 {leastExpensiveArticleSold.toFixed(2)} €
                             </p>
                         </div>
@@ -597,32 +598,32 @@
                 <div class="mb-4">
                     <div class="flex items-center text-lg font-medium text-gray-900">
                         <Mail class="mr-2 h-6 w-6 text-purple-600" />
-                        <h2>Gestion des Mails</h2>
+                        <h2>{$_('accountingPage.management.email.title')}</h2>
                     </div>
                     <div class="mt-2 flex flex-wrap gap-2">
                         <div
                             class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
                         >
                             <Settings2 class="mr-1 h-3 w-3" />
-                            Token Vinted requis
+                            {$_('accountingPage.management.email.tokenRequired')}
                         </div>
                         <div
                             class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800"
                         >
                             <Mail class="mr-1 h-3 w-3" />
-                            IMAP requis
+                            {$_('accountingPage.management.email.imapRequired')}
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-4">
                     <div>
-                        <p class="mb-2 text-sm font-medium text-gray-700">Message de remerciement</p>
+                        <p class="mb-2 text-sm font-medium text-gray-700">{$_('accountingPage.management.email.thankMessageLabel')}</p>
                         <textarea
                             bind:value={autoMessage}
                             rows="3"
                             class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
-                            placeholder="Message à inclure dans le colis..."
+                            placeholder={$_('accountingPage.management.email.thankMessagePlaceholder')}
                         ></textarea>
                     </div>
 
@@ -631,13 +632,13 @@
                             class="inline-flex items-center justify-center space-x-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                         >
                             <Mail class="h-4 w-4" />
-                            <span>Traiter les mails</span>
+                            <span>{$_('accountingPage.management.email.processButton')}</span>
                         </button>
                         <button
                             class="inline-flex items-center justify-center space-x-2 rounded-md border border-purple-600 px-4 py-2 text-sm font-medium text-purple-600 transition-colors hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                         >
                             <Printer class="h-4 w-4" />
-                            <span>Imprimer bordereaux</span>
+                            <span>{$_('accountingPage.management.email.printButton')}</span>
                         </button>
                     </div>
                 </div>
@@ -647,14 +648,14 @@
                 <div class="mb-4">
                     <div class="flex items-center text-lg font-medium text-gray-900">
                         <MessageSquare class="mr-2 h-6 w-6 text-purple-600" />
-                        <h2>Gestion des Conversations</h2>
+                        <h2>{$_('accountingPage.management.conversations.title')}</h2>
                     </div>
                     <div class="mt-2">
                         <div
                             class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
                         >
                             <Settings2 class="mr-1 h-3 w-3" />
-                            Token Vinted requis
+                            {$_('accountingPage.management.conversations.tokenRequired')}
                         </div>
                     </div>
                 </div>
@@ -663,7 +664,7 @@
                     <div>
                         <div class="flex items-center gap-4">
                             <p class="mb-2 text-sm font-medium text-gray-700 whitespace-nowrap">
-                                Supprimer les conversations datant de plus de
+                                {$_('accountingPage.management.conversations.deleteLabel')}
                             </p>
                             <div class="flex w-full items-center space-x-2">
                                 <input
@@ -673,7 +674,7 @@
                                     max="12"
                                     class="block rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
                                 />
-                                <p class="text-sm text-gray-600">mois</p>
+                                <p class="text-sm text-gray-600">{$_('accountingPage.management.conversations.months')}</p>
                             </div>
                         </div>
                     </div>
@@ -684,7 +685,7 @@
                             class="inline-flex items-center justify-center space-x-2 rounded-md border border-red-600 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                         >
                             <Trash2 class="h-4 w-4" />
-                            <span>Nettoyer</span>
+                            <span>{$_('accountingPage.management.conversations.cleanButton')}</span>
                         </button>
                     </div>
                 </div>

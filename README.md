@@ -4,6 +4,20 @@ This branch is a refactored version of smtg I did in 2023 (that used to work)
 Vinted uses SSR and makes refresh ads features a huge pain,
 Luckily they are creating an API for pro sellers (closed access only): https://pro-docs.svc.vinted.com/
 
+## Preview
+
+### Main Interface
+![Main Menu Interface](readme/menu.png)
+
+### Setup Process
+1. Login into your vinted account
+2. Copy tokens in http://localhost:5173/settings
+
+![Token Configuration](readme/tokens.png)
+
+### Sales Analytics
+![Sales Analytics Dashboard](readme/sales.png)
+
 ## Getting Started
 
 ### Prerequisites for Non-Developers
@@ -44,7 +58,7 @@ fastapi dev main.py
 
 | Feature                | Description                                              | Status               |
 | ---------------------- | -------------------------------------------------------- | -------------------- |
-| English translation    | Add a language switcher button + i18n translations       | ⚒️ Under Dev         |
+| English translation    | Add a language switcher button + i18n translations       | ✅ Done              |
 | Conversation Cleanup   | Auto-delete conversations after x months of inactivity   | ✅ Done              |
 | Ad Refresh             | Automatic refreshing of listings                         | ❌ Good luck         |
 | Sales Analytics        | Export transactions, generate graphs & statistics        | ✅ Done              |

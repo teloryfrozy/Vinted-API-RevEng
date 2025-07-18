@@ -44,13 +44,13 @@
         <h1 class="text-3xl font-bold text-gray-900">Gestion des Annonces</h1>
     </div>
 
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <!-- Rafraîchissement des Annonces -->
-        <div class="rounded-lg bg-white p-6 shadow">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"> 
+        <div class="rounded-lg bg-white p-6 shadow opacity-40">
             <div class="mb-4">
                 <div class="flex items-center text-lg font-medium text-gray-900">
                     <RefreshCw class="mr-2 h-6 w-6 text-purple-600" />
                     <h2>Rafraîchir les Annonces</h2>
+                    <span class="ml-auto text-xs text-gray-500">Too difficult to implement</span>
                 </div>
                 <div class="mt-2">
                     <div
@@ -65,8 +65,7 @@
                 Remontez vos annonces en tête de liste sur Vinted. Rafraîchissez une sélection ou toutes vos annonces en
                 un clic.
             </p>
-            <div class="grid grid-cols-2 gap-3">
-                <!-- todo: sélection les n plus vieux articles à rafraichir -->
+            <div class="grid grid-cols-2 gap-3"> 
                 <button
                     class="inline-flex items-center justify-center space-x-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                 >
@@ -127,7 +126,7 @@
                 <div class="flex items-center text-lg font-medium text-gray-900">
                     <RotateCw class="mr-2 h-6 w-6 text-purple-600" />
                     <h2>Vente Automatique</h2>
-                    <span class="ml-auto text-xs text-gray-500">En cours de développement</span>
+                    <span class="ml-auto text-xs text-gray-500">Too difficult to implement</span>
                 </div>
                 <div class="mt-2 flex flex-wrap gap-2">
                     <div

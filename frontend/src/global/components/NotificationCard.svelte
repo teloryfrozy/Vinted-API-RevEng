@@ -1,7 +1,8 @@
 <script>
     import { onDestroy } from "svelte";
+    import { _ } from 'svelte-i18n';
 
-    export let message = "Notification";
+    export let message = $_('notificationCard.defaultMessage');
     export let type = "success";
     export let visible = true;
 

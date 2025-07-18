@@ -1,0 +1,330 @@
+{
+    "menuPage": {
+        "title": "Outils d'Automatisation Vinted",
+        "adsManagement": {
+            "title": "Gérer les annonces",
+            "features": {
+                "boost": "Remonter vos annonces en tête de liste",
+                "duplicates": "Automatiser la vente de vos doublons",
+                "cleanup": "Supprimer vos articles vendus"
+            }
+        },
+        "followMass": {
+            "title": "Follow Mass",
+            "features": {
+                "follow": "Suivez des dizaines d'utilisateurs en un clic",
+                "save": "Sauvegarde d'abonnements automatique",
+                "network": "Augmentez vos relations"
+            }
+        },
+        "accounting": {
+            "title": "Secrétariat",
+            "features": {
+                "emails": "Paramétrer la gestion de vos mails",
+                "sort": "Trier vos mails de manière passive",
+                "cleanup": "Supprimer vos anciennes conversations"
+            }
+        },
+        "help": {
+            "title": "Conseils de Vente",
+            "features": {
+                "ads": "Rédiger une annonce qui vend",
+                "experience": "Notre expérience de vendeur sur Vinted",
+                "buyer": "Expérience acheteur personnalisée"
+            }
+        }
+    },
+    "followMassPage": {
+        "title": "Suivi en Masse",
+        "alert": {
+            "title": "Configuration requise",
+            "description": "Cette fonctionnalité nécessite votre token Vinted. Configurez-le dans les",
+            "settings": "paramètres",
+            "dismiss": "Fermer"
+        },
+        "subscriptionManagement": {
+            "title": "Gestion des abonnements",
+            "description": "Sauvegardez ou restaurez vos abonnements Vinted",
+            "backup": "Sauvegarder",
+            "restore": "Restaurer"
+        },
+        "massFollow": {
+            "title": "Suivi en Masse",
+            "description": "Suivez automatiquement des utilisateurs selon le mode choisi.",
+            "treeMode": {
+                "label": "Mode Arborescence",
+                "description": "Regarde vos abonnements et les abonnements de vos abonnements"
+            },
+            "reviewsMode": {
+                "label": "Mode Avis",
+                "description": "Suit les utilisateurs qui ont laissé des avis sur vos articles"
+            },
+            "userCount": "Nombre d'utilisateurs",
+            "followButton": "Suivre"
+        },
+        "urlRecovery": {
+            "title": "Récupération par URL",
+            "urlPlaceholder": "https://www.vinted.fr/member/...",
+            "urlLabel": "URL Vinted",
+            "followers": "Abonnés",
+            "followings": "Abonnements",
+            "recoverButton": "Récupérer"
+        },
+        "messages": {
+            "backupSuccess": "Abonnements sauvegardés avec succès",
+            "followSuccess": "Utilisateurs suivis avec succès",
+            "missingUrl": "URL Vinted manquante",
+            "recoverSuccess": "Abonnements récupérés avec succès, {count} utilisateurs ont été suivis"
+        }
+    },
+    "helpPage": {
+        "title": "Guide et Conseils",
+        "tabs": {
+            "tips": "Astuces de Vente",
+            "story": "Mon Parcours"
+        },
+        "tips": {
+            "photos": {
+                "title": "Photos",
+                "description": "Prenez des photos de loin car elles apparaissent rognées sur Vinted.",
+                "qualityTitle": "Des photos de qualité :",
+                "benefits": [
+                    "Inspirent confiance",
+                    "Montrent le soin apporté aux articles",
+                    "Augmentent les chances de vente"
+                ]
+            },
+            "description": {
+                "title": "Description",
+                "keyTitle": "La clé d'une bonne description :",
+                "tips": [
+                    "Texte simple et court",
+                    "Répondre aux questions dans la description",
+                    "Informations claires et précises"
+                ],
+                "conclusion": "Une description soignée reflète la qualité de vos articles."
+            },
+            "followers": {
+                "title": "Followers",
+                "description": "Développez votre réseau :",
+                "tips": [
+                    "Gagnez en visibilité grâce à vos abonnés",
+                    "Utilisez Follow Mass pour gagner pleins d'abonnés"
+                ],
+                "conclusion": "Plus d'abonnés = Plus de visibilité"
+            },
+            "thanks": {
+                "title": "Remerciements",
+                "description": "Personnalisez l'expérience client :",
+                "tips": [
+                    "Ajoutez un message personnalisé dans chaque colis",
+                    "Essayer toujours de trouver un compromis si problème",
+                    "Si mauvaise note, expliquer en répondant au commentaire"
+                ],
+                "conclusion": "Un client satisfait peut vous recommander à ses proches"
+            }
+        },
+        "story": {
+            "title": "Mon Expérience Vinted",
+            "intro": "J'ai commencé par la vente de PC customisés avant de me lancer dans la revente de consoles de jeux sur Vinted. Cette expérience m'a permis de réaliser un chiffre d'affaires de 15k€, mais m'a aussi confronté à plusieurs défis :",
+            "challenges": [
+                "Gestion chronophage des messages et des envois",
+                "Complexités administratives et fiscales",
+                "Blocages temporaires de fonds"
+            ],
+            "conclusion": "Ces challenges m'ont poussé à développer des outils d'automatisation pour optimiser le processus de vente. Je vous partage cette application pour vous aider gratuitement. N'hésitez pas à contribuer si vous êtes développeur.",
+            "tips": {
+                "verification": {
+                    "title": "🔍 Vérification status micro-entreprise",
+                    "content": "À un moment donné, Vinted a bloqué nos retraits d'argent car nous devions prouver notre statut d'entreprise. Après plusieurs semaines de recherche, j'ai trouvé la solution : le site data.inpi.fr permet d'obtenir gratuitement le document officiel nécessaire. Pas besoin de payer pour des services tiers qui vous ne vous fourniront même pas le bon document !"
+                },
+                "ban": {
+                    "title": "🚫 Éviter le bannissement",
+                    "content": "Ce conseil vaut de l'or : ne JAMAIS accepter de paiements hors Vinted, même pour arranger un client qui veut ajouter des articles à sa commande. Nous avons été bannis pour avoir utilisé PayPal dans ce cas. Je sais que c'est énervant mais il faut toujours annuler la vente si vous devez modifier un lot et créez une nouvelle annonce."
+                }
+            }
+        }
+    },
+    "settingsPage": {
+        "title": "Paramètres",
+        "saveButton": "Sauvegarder",
+        "generalPreferences": {
+            "title": "Préférences Générales",
+            "language": "Langue",
+            "languageOptions": {
+                "fr": "Français",
+                "en": "English"
+            },
+            "vintedProfile": "Profil Vinted",
+            "vintedProfilePlaceholder": "https://www.vinted.fr/users/ID"
+        },
+        "emailConfig": {
+            "title": "Configuration Email",
+            "imapServer": "Serveur IMAP",
+            "imapServerPlaceholder": "imap.gmail.com",
+            "port": "Port",
+            "portPlaceholder": "993",
+            "email": "Email",
+            "emailPlaceholder": "exemple@gmail.com",
+            "password": "Mot de passe",
+            "passwordPlaceholder": "••••••••"
+        },
+        "vintedToken": {
+            "title": "Token Vinted",
+            "description": "Les tokens sont nécessaires pour automatiser les actions sur Vinted",
+            "accessToken": "Access Token",
+            "accessTokenPlaceholder": "Collez votre access token Vinted ici",
+            "refreshToken": "Refresh Token",
+            "refreshTokenPlaceholder": "Collez votre refresh token Vinted ici",
+            "saveTokensButton": "Sauvegarder les tokens"
+        },
+        "messages": {
+            "tokenRequired": "Au moins un token est requis",
+            "tokenSaved": "Token(s) sauvegardé(s) avec succès",
+            "settingsSaved": "Paramètres sauvegardés avec succès"
+        }
+    },
+    "supportUsPage": {
+        "title": "Nous Soutenir",
+        "description": "C'est une app de logistique qu'on a développée pour notre business Vinted il y a 2 ans, à côté de nos études. Si elle vous est utile, vous pouvez nous soutenir via ces offres avantageuses !",
+        "coupert": {
+            "title": "Coupert",
+            "offer": "10€ offerts",
+            "description": "Extension qui trouve automatiquement les meilleurs codes promo. Gagnez 10€ en créant un compte et en dépensant 30€ sur l'un des 15 000 sites partenaires.",
+            "button": "Profiter de l'offre"
+        },
+        "boursorama": {
+            "title": "Boursorama Banque",
+            "offer": "Jusqu'à 170€ offerts",
+            "benefits": [
+                "80€ à 120€ de prime de bienvenue",
+                "50€ supplémentaires avec EasyMove",
+                "Carte bancaire gratuite avec 1 utilisation par mois (sinon 5€)"
+            ],
+            "openAccountButton": "Ouvrir un compte",
+            "copyCodeButton": "Copier le code AURO2755",
+            "codeCopied": "Code copié !"
+        }
+    },
+    "navbar": {
+        "logo": "Vinted Tools",
+        "sponsor": "Sponsor",
+        "starUs": "Star us",
+        "settings": "Paramètres"
+    },
+    "notificationCard": {
+        "defaultMessage": "Notification"
+    },
+    "accountingPage": {
+        "title": "Secrétariat",
+        "tabs": {
+            "favorites": "Messages favoris",
+            "sales": "Données de Vente",
+            "management": "Gestion"
+        },
+        "favorites": {
+            "title": "Messages favoris",
+            "addMessage": {
+                "nameLabel": "Nom du message",
+                "namePlaceholder": "Ex: Remerciement standard",
+                "contentLabel": "Contenu du message",
+                "contentPlaceholder": "Ex: Merci pour votre achat !",
+                "button": "Ajouter un message"
+            },
+            "emptyState": {
+                "title": "Aucun message favori pour le moment",
+                "subtitle": "Ajoutez votre premier message ci-dessus"
+            },
+            "edit": {
+                "nameLabel": "Nom",
+                "contentLabel": "Contenu",
+                "saveButton": "Sauvegarder",
+                "cancelButton": "Annuler"
+            },
+            "actions": {
+                "copy": "Copier le message",
+                "edit": "Modifier",
+                "delete": "Supprimer"
+            }
+        },
+        "sales": {
+            "title": "Données de Vente",
+            "tokenRequired": "Token Vinted requis",
+            "periodLabel": "Période d'analyse",
+            "periods": {
+                "last1M": "Dernier mois",
+                "last3M": "3 derniers mois",
+                "last6M": "6 derniers mois",
+                "ytd": "Année en cours",
+                "last1Y": "Dernière année",
+                "sinceBegin": "Depuis le début"
+            },
+            "exportButton": "Exporter les données",
+            "chart": {
+                "title": "Chiffre d'affaires et bénéfice brut dans le temps",
+                "grossProfit": "Bénéfice brut (€)",
+                "turnover": "Chiffre d'affaires (€)"
+            },
+            "stats": {
+                "turnover": {
+                    "title": "Chiffre d'affaires",
+                    "total": "Total",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "average": "Moyenne"
+                },
+                "grossProfit": {
+                    "title": "Bénéfice brut",
+                    "total": "Total",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "average": "Moyenne"
+                },
+                "bought": {
+                    "title": "Articles achetés",
+                    "total": "Total",
+                    "averagePrice": "Prix moyen",
+                    "averageCount": "Nombre moyen",
+                    "mostExpensive": "Plus cher",
+                    "leastExpensive": "Moins cher"
+                },
+                "sold": {
+                    "title": "Articles vendus",
+                    "total": "Total",
+                    "averagePrice": "Prix moyen",
+                    "averageCount": "Nombre moyen",
+                    "mostExpensive": "Plus cher",
+                    "leastExpensive": "Moins cher"
+                }
+            }
+        },
+        "management": {
+            "email": {
+                "title": "Gestion des Mails",
+                "tokenRequired": "Token Vinted requis",
+                "imapRequired": "IMAP requis",
+                "thankMessageLabel": "Message de remerciement",
+                "thankMessagePlaceholder": "Message à inclure dans le colis...",
+                "processButton": "Traiter les mails",
+                "printButton": "Imprimer bordereaux"
+            },
+            "conversations": {
+                "title": "Gestion des Conversations",
+                "tokenRequired": "Token Vinted requis",
+                "deleteLabel": "Supprimer les conversations datant de plus de",
+                "months": "mois",
+                "cleanButton": "Nettoyer"
+            }
+        },
+        "messages": {
+            "fillFields": "Veuillez remplir tous les champs",
+            "messageAdded": "Message ajouté avec succès",
+            "messageDeleted": "Message supprimé avec succès",
+            "messageUpdated": "Message modifié avec succès",
+            "noEditingMessage": "Aucun message en cours d'édition",
+            "messageCopied": "Message copié dans le presse-papiers",
+            "conversationsCleaned": "Conversations nettoyées avec succès",
+            "salesDataExported": "Données de vente exportées"
+        }
+    }
+}

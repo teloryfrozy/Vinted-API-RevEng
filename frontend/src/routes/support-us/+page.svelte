@@ -6,6 +6,7 @@
     CopyIcon,
     CheckIcon
   } from '@lucide/svelte';
+  import { _ } from 'svelte-i18n';
 
   let codeCopied = false;
 
@@ -24,23 +25,23 @@
   <div class="mb-8 rounded-lg bg-white p-6 shadow">
     <div class="mb-4 flex items-center">
       <HeartIcon class="mr-2 h-6 w-6 text-purple-600" />
-      <h2 class="text-xl font-semibold">Nous Soutenir</h2>
+      <h2 class="text-xl font-semibold">{$_('supportUsPage.title')}</h2>
     </div>
     
     <p class="text-gray-600">
-      C'est une app de logistique qu'on a développée pour notre business Vinted il y a 2 ans, à côté de nos études. Si elle vous est utile, vous pouvez nous soutenir via ces offres avantageuses !
+      {$_('supportUsPage.description')}
     </p>
   </div>
 
   <!-- Coupert -->
   <div class="mb-6 rounded-lg bg-white p-6 shadow">
     <div class="mb-4 flex items-center justify-between">
-      <h3 class="text-lg font-medium text-gray-900">Coupert</h3>
-      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">10€ offerts</span>
+      <h3 class="text-lg font-medium text-gray-900">{$_('supportUsPage.coupert.title')}</h3>
+      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">{$_('supportUsPage.coupert.offer')}</span>
     </div>
     
     <p class="mb-4 text-gray-600">
-      Extension qui trouve automatiquement les meilleurs codes promo. Gagnez 10€ en créant un compte et en dépensant 30€ sur l'un des 15 000 sites partenaires.
+      {$_('supportUsPage.coupert.description')}
     </p>
     
     <a 
@@ -50,21 +51,21 @@
       class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
     >
       <GiftIcon class="mr-2 h-4 w-4" />
-      Profiter de l'offre
+      {$_('supportUsPage.coupert.button')}
     </a>
   </div>
 
   <!-- Boursorama -->
   <div class="rounded-lg bg-white p-6 shadow">
     <div class="mb-4 flex items-center justify-between">
-      <h3 class="text-lg font-medium text-gray-900">Boursorama Banque</h3>
-      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">Jusqu'à 170€ offerts</span>
+      <h3 class="text-lg font-medium text-gray-900">{$_('supportUsPage.boursorama.title')}</h3>
+      <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">{$_('supportUsPage.boursorama.offer')}</span>
     </div>
     
     <ul class="mb-4 list-inside list-disc text-gray-600">
-      <li>80€ à 120€ de prime de bienvenue</li>
-      <li>50€ supplémentaires avec EasyMove</li>
-      <li>Carte bancaire gratuite avec 1 utilisation par mois (sinon 5€)</li>
+      {#each $_('supportUsPage.boursorama.benefits') as benefit}
+        <li>{benefit}</li>
+      {/each}
     </ul>
     
     <div class="flex items-center gap-4">
@@ -75,7 +76,7 @@
         class="inline-flex items-center rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
       >
         <CreditCardIcon class="mr-2 h-4 w-4" />
-        Ouvrir un compte
+        {$_('supportUsPage.boursorama.openAccountButton')}
       </a>
 
       <button
@@ -84,10 +85,10 @@
       >
         {#if codeCopied}
           <CheckIcon class="mr-2 h-4 w-4 text-green-500" />
-          Code copié !
+          {$_('supportUsPage.boursorama.codeCopied')}
         {:else}
           <CopyIcon class="mr-2 h-4 w-4" />
-          Copier le code AURO2755
+          {$_('supportUsPage.boursorama.copyCodeButton')}
         {/if}
       </button>
     </div>

@@ -1,5 +1,6 @@
 <script>
   import { Home, Heart, Github, Settings } from '@lucide/svelte';
+  import { _ } from 'svelte-i18n';
 </script>
 
 <nav class="bg-white shadow-lg">
@@ -10,7 +11,7 @@
         <div class="flex items-center">
           <a href="/" class="flex items-center space-x-2">
             <Home class="h-8 w-8 text-purple-600" />
-            <span class="text-xl font-semibold">Vinted Tools</span>
+            <span class="text-xl font-semibold">{$_('navbar.logo')}</span>
           </a>
         </div>
       </div>
@@ -23,7 +24,7 @@
           class="inline-flex items-center space-x-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
         >
           <Heart class="h-5 w-5" />
-          <span>Sponsor</span>
+          <span>{$_('navbar.sponsor')}</span>
         </a>
 
         <!-- GitHub Star Button -->
@@ -34,7 +35,7 @@
           class="inline-flex items-center space-x-2 rounded-md bg-gray-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
         >
           <Github class="h-5 w-5" />
-          <span>Star us</span>
+          <span>{$_('navbar.starUs')}</span>
         </a>
 
         <!-- Settings Button -->
@@ -43,7 +44,7 @@
           class="inline-flex items-center space-x-2 rounded-md px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
         >
           <Settings class="h-5 w-5" />
-          <span>Paramètres</span>
+          <span>{$_('navbar.settings')}</span>
         </a>
       </div>
     </div>
