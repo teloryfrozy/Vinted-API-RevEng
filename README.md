@@ -1,7 +1,8 @@
 # Vinted Management Tool
 
-A local tool to help you manage your Vinted account super fast !
-Interface in French only for now.
+This branch is a refactored version of smtg I did in 2023 (that used to work)
+Vinted uses SSR and makes refresh ads features a huge pain,
+Luckily they are creating an API for pro sellers (closed access only): https://pro-docs.svc.vinted.com/
 
 ## Getting Started
 
@@ -43,9 +44,9 @@ fastapi dev main.py
 
 | Feature                | Description                                              | Status               |
 | ---------------------- | -------------------------------------------------------- | -------------------- |
-| English translation    | Add a language switcher button + i18n translations       | ⚠️ Not Planned       |
+| English translation    | Add a language switcher button + i18n translations       | ⚒️ Under Dev         |
 | Conversation Cleanup   | Auto-delete conversations after x months of inactivity   | ✅ Done              |
-| Ad Refresh             | Automatic refreshing of listings                         | ⚒️ Under Refactoring |
+| Ad Refresh             | Automatic refreshing of listings                         | ❌ Good luck         |
 | Sales Analytics        | Export transactions, generate graphs & statistics        | ✅ Done              |
 | Favorite Messages      | Quick-copy system for 5 favorite messages                | ✅ Done              |
 | Publication Menu       | Database-linked posting system with search functionality | 📝 To Be Done        |
@@ -54,7 +55,7 @@ fastapi dev main.py
 | Feedback System        | Random automated feedback for transactions               | ⚠️ Not Planned       |
 | Like Notifications     | Auto-send notifications to users who liked an item       | ⚠️ Not Planned       |
 | Auto Purchase Response | Automatic message when a buyer purchases an item         | ⚠️ Not Planned       |
-| Item Database          | Auto re upload for items with multiple copies            | ⚠️ Not Planned       |
+| Item Database          | Auto re upload for items with multiple copies            | ❌ Good luck         |
 
 ## Legal Notice
 
