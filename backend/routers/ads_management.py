@@ -1,17 +1,14 @@
 """
-TODO:
-- add a input front to select the number of n last ads to refresh
-- finish the refresh ads function
+Notes:
+- Vinted uses SSR and item data is hidden in html, its a pain to extract and I did not manage
+They are building an API for pro users: https://pro-docs.svc.vinted.com/#vinted-pro-integrations-documentation-items-api
 """
 
 import json
 import requests
 import re
-from bs4 import BeautifulSoup
 from time import sleep
-from typing import List
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
 from utils import execute_request, get_vinted_headers
 from constants import API_URL
 from sqlmodel import Session, select
@@ -22,73 +19,17 @@ router = APIRouter(
 )
 
 
-class PhotoThumbnail(BaseModel):
-    type: str
-    url: str
-
-
-class Photo(BaseModel):
-    thumbnails: List[PhotoThumbnail]
-
-
-class Price(BaseModel):
-    currency_code: str
-    amount: float
-
-
-def extract_photos_urls(photos: List[Photo]) -> List[str]:
-    """Extracts photo URLs from photos data"""
-    urls = []
-    for photo in photos:
-        for thumbnail in photo.thumbnails:
-            if thumbnail.type == "thumb364x428":
-                urls.append(thumbnail.url)
-    return urls
-
-
-def prepare_item_info(item: dict) -> dict:
-    pass
-
-
-async def upload_photos(urls: List[str], temp_uuid: str, headers: dict) -> List[int]:
-    """Uploads photos and returns list of photo IDs"""
-    photo_ids = []
-
-    for i, url in enumerate(urls):
-        response = requests.get(url)
-        if response.status_code != 200:
-            continue
-
-        files = [("photo[file]", (f"{i}.jpg", response.content, "image/jpeg"))]
-        payload = {"photo[type]": "item", "photo[temp_uuid]": temp_uuid}
-
-        response = requests.post(
-            "https://www.vinted.fr/api/v2/photos",
-            headers=headers,
-            data=payload,
-            files=files,
-        )
-
-        if response.status_code == 200:
-            photo_ids.append(response.json()["id"])
-
-    return photo_ids
-
-
 @router.get("/refresh-ads")
 async def refresh_ads(
     headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)
 ):
     """Refreshes ads available for the authenticated profile"""
-    same_row = 0
     page = 1
 
     url = f"{API_URL}wardrobe/4977264403/items?page={page}&per_page=20&order=revelance"
     response = execute_request("GET", url, headers)
 
     total_pages = response.json()["pagination"]["total_pages"]
-
-    print("Il y a", total_pages, "pages")
 
     while page <= total_pages:
         user = session.exec(select(User).where(User.id == 1)).first()
@@ -114,65 +55,32 @@ async def refresh_ads(
 
             response = execute_request("GET", item_url, headers)
 
-            result = re.search(
-                r'(\{"itemDto":.*?"electronicsVerification":.*?\}\})\]',
-                response.text.replace('\\"', '"').replace("\\\\n", "\\n"),
-            )
-            if result:
-                item_dto_str = result.group(1)
+            item_data = extract_item_json(response.text)
 
-                try:
-                    item_data = json.loads(item_dto_str)
-                except json.JSONDecodeError as e:
-                    print(f"Error parsing JSON: {e}")
+            if item_data:
+                return {"message": "Not implemented"}
+
+                """
+                Roadmap to repost an item:
+                1) Download current photos
+                2) Upload new photos
+                3) Delete item
+                4) Upload item
+                """
+
+                # 3) Delete item before reposting it
+                if delete_item(item["path"], item["id"], headers):
+                    print(f"Item: {item_data['title']} deleted successfully")
+                else:
+                    print(f"Item: {item_data['title']} not deleted, skipping")
+                    continue
+
+                # 4) Upload item
+
+                print(f"Item: {item_data['title']} reposted successfully")
             else:
-                print("No item data found in the response")
-
-            return {
-                "message": "Item data fetched successfully",
-            }
-
-            # Prepare item data
-            # item_info = prepare_item_info(item)
-            # photo_urls = extract_photos_urls(item["photos"])
-
-            # # Handle rate limiting
-            # if same_row == 15:
-            #     sleep(30)
-            #     same_row = 0
-
-            # # Get temp UUID for upload
-            # response = requests.get("https://www.vinted.fr/items/new", headers=headers)
-            # temp_uuid = (
-            #     re.search(
-            #         r'<div id="ItemUpload-react-component-\s*(.*?)\s*"',
-            #         response.text,
-            #         re.DOTALL,
-            #     )
-            #     .group(1)
-            #     .strip()
-            # )
-
-            # # Upload photos
-            # photo_ids = await upload_photos(photo_urls, temp_uuid, headers)
-
-            # # Prepare final item data
-            # item_info["temp_uuid"] = temp_uuid
-            # item_info["assigned_photos"] = [
-            #     {"id": pid, "orientation": 0} for pid in photo_ids
-            # ]
-
-            # Upload item
-            # response = requests.post(
-            #     "https://www.vinted.fr/api/v2/items",
-            #     headers=headers,
-            #     json={"item": item_info, "feedback_id": None},
-            # )
-
-            # if response.status_code == 200:
-            #     # Delete old item
-            #     requests.post(f"{API_URL}items/{item['id']}/delete", headers=headers)
-            #     same_row += 1
+                print("No item data found in the response, skipping")
+                continue
 
         page += 1
 
@@ -183,7 +91,6 @@ async def refresh_ads(
 async def delete_sold_items(
     headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)
 ):
-    """Deletes all sold items"""
     page = 1
 
     while True:
@@ -211,10 +118,7 @@ async def delete_sold_items(
                 sleep(30)
                 nb_items_deleted = 0
 
-            response = execute_request(
-                "delete", f"{API_URL}items/{item['id']}/delete", headers
-            )
-            if response.status_code == 200:
+            if delete_item(item["path"], item["id"], headers):
                 nb_items_deleted += 1
 
         page += 1
@@ -226,7 +130,6 @@ async def delete_sold_items(
 async def delete_all_ads(
     headers: dict = Depends(get_vinted_headers), session: Session = Depends(get_session)
 ):
-    """Deletes all ads"""
     page = 1
 
     while True:
@@ -250,12 +153,94 @@ async def delete_all_ads(
                 sleep(30)
                 nb_items_deleted = 0
 
-            response = execute_request(
-                "delete", f"{API_URL}items/{item['id']}/delete", headers
-            )
-            if response.status_code == 200:
+            if delete_item(item["path"], item["id"], headers):
                 nb_items_deleted += 1
 
         page += 1
 
     return {"message": "All ads deleted"}
+
+
+def delete_item(path: str, item_id: int, headers: dict) -> bool:
+    item_url = f"https://www.vinted.fr{path}"
+
+    csrf_token = get_csrf_token(item_url, headers)
+    if csrf_token:
+        headers["X-CSRF-Token"] = csrf_token
+        response = execute_request(
+            "DELETE", f"{API_URL}items/{item_id}/delete", headers
+        )
+        return response.status_code == 200
+    else:
+        return False
+
+
+def get_csrf_token(item_url: str, headers: dict) -> str | None:
+    response = requests.get(item_url, headers=headers)
+
+    if response.status_code == 200:
+        html_content = response.text
+        pattern = r'\\"CSRF_TOKEN\\":\\"(.*?)\\"'
+
+        matches = re.findall(pattern, html_content)
+        if matches:
+            return matches[0]
+        return None
+    else:
+        return None
+
+
+def extract_item_json(html_content: str):
+    """Vinted loves to hide its data in html, this is how to extract with chatGPT"""
+    # Find all script tags with the pattern
+    script_matches = re.findall(
+        r'self\.__next_f\.push\(\[1,"(.*?)"\]\)</script>', html_content, re.DOTALL
+    )
+
+    for json_str in script_matches:
+        if json_str.startswith("16:"):
+            json_str = json_str[3:]
+
+        json_str = json_str.replace('\\"', '"').replace("\\\\n", "\\n")
+
+        # Check if this script contains item_closing_action
+        if "item_closing_action" in json_str:
+            # Find the first complete JSON object
+            brace_count = 0
+            start = json_str.find("{")
+            if start != -1:
+                for i in range(start, len(json_str)):
+                    if json_str[i] == "{":
+                        brace_count += 1
+                    elif json_str[i] == "}":
+                        brace_count -= 1
+                        if brace_count == 0:
+                            json_str = json_str[start : i + 1]
+                            break
+
+            try:
+                data = json.loads(json_str)
+
+                # Find item in the structure
+                def find_item(obj):
+                    if isinstance(obj, dict) and "item" in obj:
+                        return obj["item"]
+                    elif isinstance(obj, dict):
+                        for v in obj.values():
+                            result = find_item(v)
+                            if result:
+                                return result
+                    elif isinstance(obj, list):
+                        for v in obj:
+                            result = find_item(v)
+                            if result:
+                                return result
+                    return None
+
+                return find_item(data)
+            except json.JSONDecodeError as e:
+                print(f"Error parsing JSON: {e}")
+                continue
+
+    print("No script with item_closing_action found")
+    return None

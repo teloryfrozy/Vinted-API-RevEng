@@ -1,6 +1,6 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from config.settings import ALLOW_ORIGINS, DEBUG_MODE
+from config.settings import ALLOW_ORIGINS, DEBUG_MODE, ALLOW_METHODS
 from routers import ads_management, auth, follow_mass, accounting
 from config.models import lifespan
 
@@ -18,6 +18,6 @@ app.include_router(accounting.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOW_ORIGINS,
-    allow_methods=["GET", "POST", "DELETE"],
+    allow_methods=ALLOW_METHODS,
     allow_credentials=True,
 )

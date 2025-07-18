@@ -30,7 +30,7 @@ async function processResponseData(response: Response): Promise<FetchDataResult>
 }
 
 export async function fetchData(
-    method: "POST" | "GET" | "DELETE" | "PUT",
+    method: "POST" | "GET" | "DELETE" | "PATCH",
     path: string,
     body?: Record<string, any>,
 ): Promise<FetchDataResult> {

@@ -4,7 +4,7 @@ All secrets will be loaded from environment variables
 
 DEBUG_MODE = True
 ALLOW_ORIGINS = ["http://localhost:5173"]
-
+ALLOW_METHODS = ["GET", "POST", "DELETE", "PATCH"]
 
 # DB might change, I just use sqlite for now
 sqlite_file_name = "database.db"

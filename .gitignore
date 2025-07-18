@@ -30,3 +30,4 @@ dist/
 alembic/
 alembic.ini
 accounting/
+tests_py/
