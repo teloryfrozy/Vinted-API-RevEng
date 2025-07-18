@@ -1,17 +1,146 @@
 <script lang="ts">
-    import { Mail, Trash2, MessageSquare, Printer, Star, Settings2 } from "@lucide/svelte";
+    import { Mail, Trash2, MessageSquare, Printer, Settings2, Plus, Edit, Copy } from "@lucide/svelte";
     import { fetchData } from "../../global/fetchData";
     import Notification from "../../global/components/NotificationCard.svelte";
     import { onMount } from "svelte";
     import Chart from "chart.js/auto";
 
+    interface FavoriteMessage {
+        id: number | null;
+        name: string;
+        message: string;
+        createdAt: string;
+        updatedAt: string | null;
+        userId: number;
+    }
+
     let monthsToKeep = 2;
     let autoMessage = "Merci pour votre achat ! N'oubliez pas de laisser un avis 😊";
+
+    let favoriteMessages: FavoriteMessage[] = [];
+    let newMessageName = "";
+    let newMessageContent = "";
+    let editingMessage: FavoriteMessage | null = null;
+    let editMessageName = "";
+    let editMessageContent = "";
 
     let showNotif = false;
     let message = "";
     let type = "";
     let selectedPeriod = "last1Y";
+
+    onMount(async () => {
+        await loadFavoriteMessages();
+        console.log(favoriteMessages);
+    });
+
+    async function loadFavoriteMessages() {
+        const result = await fetchData("GET", "accounting/favorite-messages");
+        if (result.success) {
+            favoriteMessages = result.data.messages;
+        } else {
+            showNotif = true;
+            message = result.error as string;
+            type = "error";
+        }
+    }
+
+    async function addFavoriteMessage() {
+        if (!newMessageName.trim() || !newMessageContent.trim()) {
+            showNotif = true;
+            message = "Veuillez remplir tous les champs";
+            type = "error";
+            return;
+        }
+
+        const result = await fetchData("POST", "accounting/add-favorite-message", {
+            name: newMessageName,
+            message: newMessageContent,
+        });
+
+        if (result.success) {
+            showNotif = true;
+            message = "Message ajouté avec succès";
+            type = "success";
+            newMessageName = "";
+            newMessageContent = "";
+            await loadFavoriteMessages();
+        } else {
+            showNotif = true;
+            message = result.error as string;
+            type = "error";
+        }
+    }
+
+    async function deleteFavoriteMessage(id: number) {
+        const result = await fetchData("DELETE", "accounting/delete-favorite-message", {
+            id: id,
+        });
+
+        if (result.success) {
+            showNotif = true;
+            message = "Message supprimé avec succès";
+            type = "success";
+            await loadFavoriteMessages();
+        } else {
+            showNotif = true;
+            message = result.error as string;
+            type = "error";
+        }
+    }
+
+    async function updateFavoriteMessage() {
+        if (!editMessageName.trim() || !editMessageContent.trim()) {
+            showNotif = true;
+            message = "Veuillez remplir tous les champs";
+            type = "error";
+            return;
+        }
+
+        if (!editingMessage || !editingMessage.id) {
+            showNotif = true;
+            message = "Aucun message en cours d'édition";
+            type = "error";
+            return;
+        }
+
+        const result = await fetchData("PATCH", "accounting/update-favorite-message", {
+            id: editingMessage.id as number,
+            name: editMessageName,
+            message: editMessageContent,
+        });
+
+        if (result.success) {
+            showNotif = true;
+            message = "Message modifié avec succès";
+            type = "success";
+            editingMessage = null;
+            await loadFavoriteMessages();
+        } else {
+            showNotif = true;
+            message = result.error as string;
+            type = "error";
+        }
+    }
+
+    function startEdit(message: FavoriteMessage) {
+        editingMessage = message;
+        editMessageName = message.name;
+        editMessageContent = message.message;
+    }
+
+    function cancelEdit() {
+        editingMessage = null;
+        editMessageName = "";
+        editMessageContent = "";
+    }
+
+    function copyToClipboard(text: string) {
+        navigator.clipboard.writeText(text);
+        showNotif = true;
+        message = "Message copié dans le presse-papiers";
+        type = "success";
+    }
 
     async function cleanConversations() {
         const result = await fetchData("POST", "accounting/clean-conversations", {
@@ -76,7 +205,7 @@
     let showSalesGraph = false;
     let canvas: HTMLCanvasElement | null = null;
     let chart: Chart | null = null;
-    let activeTab = "sales";
+    let activeTab = "favorites";
 
     let totalTurnover = 0;
 
@@ -158,6 +287,14 @@
 
     <div class="mb-8 flex border-b">
         <button
+            class="mr-4 border-b-2 px-4 py-2 {activeTab === 'favorites'
+                ? 'border-purple-600 text-purple-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'}"
+            on:click={() => (activeTab = "favorites")}
+        >
+            Messages favoris
+        </button>
+        <button
             class="mr-4 border-b-2 px-4 py-2 {activeTab === 'sales'
                 ? 'border-purple-600 text-purple-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'}"
@@ -179,7 +316,128 @@
         </button>
     </div>
 
-    {#if activeTab === "sales"}
+    {#if activeTab === "favorites"}
+        <div class="space-y-6">
+            <div class="rounded-lg bg-white p-6 shadow">
+                <div class="mb-4">
+                    <div class="flex items-center text-lg font-medium text-gray-900">
+                        <MessageSquare class="mr-2 h-6 w-6 text-purple-600" />
+                        <h2>Messages favoris</h2>
+                    </div>
+                </div>
+
+                <div class="mb-6 space-y-4">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                            <p class="block text-sm font-medium text-gray-700 mb-2">Nom du message</p>
+                            <input
+                                type="text"
+                                bind:value={newMessageName}
+                                placeholder="Ex: Remerciement standard"
+                                class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                            />
+                        </div>
+                        <div>
+                            <p class="block text-sm font-medium text-gray-700 mb-2">Contenu du message</p>
+                            <textarea
+                                bind:value={newMessageContent}
+                                placeholder="Ex: Merci pour votre achat !"
+                                class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                            ></textarea>
+                        </div>
+                    </div>
+                    <button
+                        on:click={addFavoriteMessage}
+                        class="inline-flex items-center justify-center space-x-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                    >
+                        <Plus class="h-4 w-4" />
+                        <span>Ajouter un message</span>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    {#if favoriteMessages.length === 0}
+                        <div class="text-center py-8 text-gray-500">
+                            <MessageSquare class="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                            <p>Aucun message favori pour le moment</p>
+                            <p class="text-sm">Ajoutez votre premier message ci-dessus</p>
+                        </div>
+                    {:else}
+                        {#each favoriteMessages as message}
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                {#if editingMessage?.id === message.id}
+                                    <div class="space-y-4">
+                                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                            <div>
+                                                <p class="block text-sm font-medium text-gray-700 mb-2">Nom</p>
+                                                <input
+                                                    type="text"
+                                                    bind:value={editMessageName}
+                                                    class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <p class="block text-sm font-medium text-gray-700 mb-2">Contenu</p>
+                                                <input
+                                                    type="text"
+                                                    bind:value={editMessageContent}
+                                                    class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button
+                                                on:click={updateFavoriteMessage}
+                                                class="inline-flex items-center justify-center space-x-2 rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                            >
+                                                Sauvegarder
+                                            </button>
+                                            <button
+                                                on:click={cancelEdit}
+                                                class="inline-flex items-center justify-center space-x-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                            >
+                                                Annuler
+                                            </button>
+                                        </div>
+                                    </div>
+                                {:else}
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h3 class="font-medium text-gray-900 mb-1">{message.name}</h3>
+                                            <p class="text-gray-600 text-sm">{message.message}</p>
+                                        </div>
+                                        <div class="flex space-x-2 ml-4">
+                                            <button
+                                                on:click={() => copyToClipboard(message.message)}
+                                                class="inline-flex items-center justify-center space-x-1 rounded-md border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                                title="Copier le message"
+                                            >
+                                                <Copy class="h-4 w-4" />
+                                            </button>
+                                            <button
+                                                on:click={() => startEdit(message)}
+                                                class="inline-flex items-center justify-center space-x-1 rounded-md border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                                title="Modifier"
+                                            >
+                                                <Edit class="h-3 w-3" />
+                                            </button>
+                                            <button
+                                                on:click={() => message.id && deleteFavoriteMessage(message.id)}
+                                                class="inline-flex items-center justify-center space-x-1 rounded-md border border-red-300 px-2 py-1 text-xs font-medium text-red-700 transition-colors hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                                title="Supprimer"
+                                            >
+                                                <Trash2 class="h-3 w-3" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+                        {/each}
+                    {/if}
+                </div>
+            </div>
+        </div>
+    {:else if activeTab === "sales"}
         <div class="space-y-6">
             <div class="rounded-lg bg-white p-6 shadow">
                 <div class="mb-4">
@@ -333,9 +591,7 @@
                 </div>
             {/if}
         </div>
-    {/if}
-
-    {#if activeTab === "management"}
+    {:else if activeTab === "management"}
         <div class="grid gap-6 md:grid-cols-2">
             <div class="rounded-lg bg-white p-6 shadow">
                 <div class="mb-4">

@@ -41,3 +41,12 @@ class User(SQLModel, table=True):
     imapUsername: str | None = Field()
     imapPassword: str | None = Field()
     userId: int | None = Field()
+
+
+class FavoriteMessage(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field()
+    message: str = Field()
+    createdAt: datetime = Field()
+    updatedAt: datetime | None = Field()
+    userId: int = Field()

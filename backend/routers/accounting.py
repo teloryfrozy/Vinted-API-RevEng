@@ -1,10 +1,10 @@
 import datetime
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlmodel import Session
+from sqlmodel import Session, select
 from constants import API_URL
 from utils import execute_request, get_vinted_headers
-from config.models import get_session
+from config.models import get_session, FavoriteMessage, User
 
 router = APIRouter(
     prefix="/accounting",
@@ -15,8 +15,127 @@ class CleanConversations(BaseModel):
     monthsToKeep: int
 
 
+class AddFavoriteMessage(BaseModel):
+    name: str
+    message: str
+
+
+class DeleteFavoriteMessage(BaseModel):
+    id: int
+
+
+class UpdateFavoriteMessage(BaseModel):
+    id: int
+    name: str
+    message: str
+
+
 class ExportSalesData(BaseModel):
     period: str
+
+
+@router.get("/favorite-messages")
+def get_favorite_messages(
+    session: Session = Depends(get_session),
+):
+    user = session.exec(select(User).where(User.id == 1)).first()
+    if not user:
+        return {"success": False, "error": "User not found"}
+
+    messages = session.exec(
+        select(FavoriteMessage)
+        .where(FavoriteMessage.userId == user.userId)
+        .order_by(FavoriteMessage.createdAt.desc())
+        .limit(5)
+    ).all()
+
+    return {"success": True, "messages": messages}
+
+
+@router.post("/add-favorite-message")
+def add_favorite_message(
+    add_favorite_message: AddFavoriteMessage,
+    session: Session = Depends(get_session),
+):
+    user = session.exec(select(User).where(User.id == 1)).first()
+    if not user:
+        return {"success": False, "error": "User not found"}
+
+    existing_count = session.exec(
+        select(FavoriteMessage).where(FavoriteMessage.userId == user.userId)
+    ).all()
+
+    if len(existing_count) >= 5:
+        return {"success": False, "error": "Maximum 5 favorite messages allowed"}
+
+    new_message = FavoriteMessage(
+        name=add_favorite_message.name,
+        message=add_favorite_message.message,
+        userId=user.userId,
+        createdAt=datetime.datetime.now(),
+        updatedAt=datetime.datetime.now(),
+    )
+
+    session.add(new_message)
+    session.commit()
+    session.refresh(new_message)
+
+    return {"success": True, "data": new_message}
+
+
+@router.delete("/delete-favorite-message")
+def delete_favorite_message(
+    delete_favorite_message: DeleteFavoriteMessage,
+    session: Session = Depends(get_session),
+):
+    user = session.exec(select(User).where(User.id == 1)).first()
+    if not user:
+        return {"success": False, "error": "User not found"}
+
+    message = session.exec(
+        select(FavoriteMessage).where(
+            FavoriteMessage.id == delete_favorite_message.id,
+            FavoriteMessage.userId == user.userId,
+        )
+    ).first()
+
+    if not message:
+        return {"success": False, "error": "Message not found"}
+
+    session.delete(message)
+    session.commit()
+
+    return {"success": True, "message": "Message deleted successfully"}
+
+
+@router.patch("/update-favorite-message")
+def update_favorite_message(
+    update_favorite_message: UpdateFavoriteMessage,
+    session: Session = Depends(get_session),
+):
+    user = session.exec(select(User).where(User.id == 1)).first()
+    if not user:
+        return {"success": False, "error": "User not found"}
+
+    message = session.exec(
+        select(FavoriteMessage).where(
+            FavoriteMessage.id == update_favorite_message.id,
+            FavoriteMessage.userId == user.userId,
+        )
+    ).first()
+
+    if not message:
+        return {"success": False, "error": "Message not found"}
+
+    message.name = update_favorite_message.name
+    message.message = update_favorite_message.message
+    message.updatedAt = datetime.datetime.now()
+
+    session.add(message)
+    session.commit()
+    session.refresh(message)
+
+    return {"success": True, "data": message}
 
 
 def get_transactions_data(year, month, headers):
